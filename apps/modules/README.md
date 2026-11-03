@@ -1,29 +1,24 @@
-# Modules v0.3.0
+# Modules v0.4.0 — Compatibilidade com os módulos completos
 
-**Instale apenas esta extensão no Chrome.** Ela mostra um menu radial no canto inferior direito do Moodle e baixa os módulos selecionados do GitHub como scripts com SHA-256 conferido.
+Instale **somente a extensão Modules** no Chrome. Esta versão recupera o motor completo das versões anteriores de Corrections (1.7.8) e Dates (1.3.8) dentro da extensão mestre.
 
-## Instalação
+## Uso
 
-1. Extraia `Modules-0.3.0.zip` numa pasta.
-2. Abra `chrome://extensions`, ative Modo do desenvolvedor e use **Carregar sem compactação** nessa pasta.
-3. Abra os **Detalhes** do Modules e habilite **Permitir scripts do usuário**.
-4. Entre em uma página do Moodle SENAI/FIEG, abra o botão radial e clique em **Modules**.
-5. No modal, clique **Instalar**. Após a ativação o ícone do módulo aparecerá no menu radial.
+1. Extraia o ZIP e abra `chrome://extensions` → **Modo do desenvolvedor** → **Carregar sem compactação**.
+2. Se você já tiver Corrections e Dates como extensões Chrome, desative essas versões para evitar execução duplicada.
+3. Entre em uma página de curso ou categoria do Moodle SENAI/FIEG.
+4. Abra o botão radial no canto inferior direito e clique em **Modules**. O catálogo só mostra **nome, versão e três ícones:** instalar, atualizar e remover. O ícone de atualização fica cinza quando não existe uma versão nova incluída.
+5. Ative Corrections e Dates. O Corrections adiciona **buscar, baixar, importar**; o Dates adiciona **Ajustar datas**, com o painel completo e gravação conferida pelo Moodle.
 
-O clique no ícone de um módulo abre **o mesmo modal**, com transformação animada a partir do botão. Fora das rotas compatíveis, o botão fica cinza.
+## Comportamento preservado
 
-O catálogo mostra apenas **nome, versão e ações**. Não abre página de opções, novas abas de extensão ou popups de diagnóstico. O ícone da barra do Chrome abre o catálogo dentro da página Moodle atual.
+- Corrections: busca de envios pendentes em cursos e categorias, downloads, importação CSV/XLSX em lote e importação da tela de avaliação.
+- Dates: tabela completa, leitura automática de datas, preenchimento rápido, identificação do cronograma e gravação com verificação em iframe oculto.
+- Ações aparecem somente nas rotas corretas; botões sem ação disponível ficam cinza.
+- Corrections exibe seus botões de ação **dentro do próprio modal**; Dates mantém o painel original, com abertura animada a partir do botão radial.
 
-## Limites atuais
+## Limitação importante
 
-Esta é a primeira implementação do contrato de interface modal. Corrections permite navegar pelos cursos e atividades identificados na página; Dates oferece a lista de atividades com acesso ao formulário oficial do Moodle. **Não substitui** ainda a busca integral de pendências, a importação/baixa de notas nem a edição automática em lote presentes nas versões antigas. Essas operações dependem da migração dos serviços protegidos para o host Modules.
+A 0.4 é uma **versão de compatibilidade**, com os motores completos incorporados como arquivos locais e ativados individualmente via `chrome.scripting.registerContentScripts`. Não baixa ainda a lógica completa de cada módulo do GitHub para atualizá-la independentemente do mestre. O catálogo instalado/atualizado funciona, mas a distribuição independente exigirá uma camada segura adicional que transporte código ou serviços privilegiados de cada módulo. Não declare uma atualização remota quando não houver pacote novo.
 
-O catálogo é obtido de `registry/catalog-v3.json`. Falhas de rede usam o catálogo incorporado; downloads de scripts exigem URLs pinadas em commits e hash SHA-256 válido. Os módulos podem ser desativados ou removidos individualmente.
-
-## Desenvolvimento
-
-- [Épico](https://github.com/Julioall/extensions/issues/1)
-- [Novo padrão de interface modal](https://github.com/Julioall/extensions/issues/9)
-- Testes automatizados de regressão: `cd apps/modules && npm test`.
-
-A validação final ainda requer Chrome real, com a permissão User Scripts habilitada.
+**Validação:** testes de sintaxe e consistência de conteúdo originais; teste Chrome/Moodle real pendente neste ambiente por bloqueio de navegação do navegador de testes.
