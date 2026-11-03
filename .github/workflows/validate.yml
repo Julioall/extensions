@@ -22,3 +22,12 @@ jobs:
       - name: Verify module manifests
         run: |
           node -e "for (const id of ['corrections','dates']) {const x=require('./modules/'+id+'/module.json'); if(x.id !== id || x.schemaVersion !== 1) process.exit(1)}"
+      - name: Build Modules installable ZIP
+        run: |
+          cd apps/modules
+          zip -q -r ../../modules-master-0.1.0.zip . -x "tests/*"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: modules-master-0.1.0
+          path: modules-master-0.1.0.zip
+          if-no-files-found: error
