@@ -1,27 +1,29 @@
-# Modules — extensão mestre (M1)
+# Modules v0.3.0
 
-Instale **Modules** em chrome://extensions > Modo do desenvolvedor > Carregar sem compactação > pasta apps/modules.
+**Instale apenas esta extensão no Chrome.** Ela mostra um menu radial no canto inferior direito do Moodle e baixa os módulos selecionados do GitHub como scripts com SHA-256 conferido.
 
-O menu principal é a extensão do Chrome (popup ao clicar no ícone). O menu radial é injetado no canto inferior direito apenas em ead.senai.br e ead.fieg.com.br. Quatro ações com distância 89px; a ação correspondente fica cinza quando a rota está errada ou a UI original não está disponível.
+## Instalação
 
-**Importante para coexistência:** após a instalação do mestre, atualizar manifests de Corrections e Dates para remover as entradas que injetam \`radial.js\` e \`radial.css\`. O mestre procura os botões originais dos módulos — estes ainda são responsáveis pelas funções; não há execução de scripts obtidos via GitHub. Caso mantenha módulos legados não migrados, o host usa o mesmo ID do menu anterior para reduzir duplicação, mas esta não é a solução permanente.
+1. Extraia `Modules-0.3.0.zip` numa pasta.
+2. Abra `chrome://extensions`, ative Modo do desenvolvedor e use **Carregar sem compactação** nessa pasta.
+3. Abra os **Detalhes** do Modules e habilite **Permitir scripts do usuário**.
+4. Entre em uma página do Moodle SENAI/FIEG, abra o botão radial e clique em **Modules**.
+5. No modal, clique **Instalar**. Após a ativação o ícone do módulo aparecerá no menu radial.
 
-O catálogo obtido do GitHub é tratado como dado não confiável. Caso a rede falhe, usa \`catalog.json\` embarcado. Ações de download exigem URL allowlisted de uma GitHub Release e SHA-256 conhecido no catálogo. Releases ainda não publicadas ficam inativas.
+O clique no ícone de um módulo abre **o mesmo modal**, com transformação animada a partir do botão. Fora das rotas compatíveis, o botão fica cinza.
 
-Ver [plano completo](../../docs/IMPLEMENTATION_PLAN.md).
+O catálogo mostra apenas **nome, versão e ações**. Não abre página de opções, novas abas de extensão ou popups de diagnóstico. O ícone da barra do Chrome abre o catálogo dentro da página Moodle atual.
 
+## Limites atuais
 
-## Protótipo v0.2.0 — um único Chrome extension
+Esta é a primeira implementação do contrato de interface modal. Corrections permite navegar pelos cursos e atividades identificados na página; Dates oferece a lista de atividades com acesso ao formulário oficial do Moodle. **Não substitui** ainda a busca integral de pendências, a importação/baixa de notas nem a edição automática em lote presentes nas versões antigas. Essas operações dependem da migração dos serviços protegidos para o host Modules.
 
-O **Modules** é a única extensão instalada. Use `chrome://extensions` para habilitar **Permitir scripts do usuário** em Modules (Chrome 138+).
+O catálogo é obtido de `registry/catalog-v3.json`. Falhas de rede usam o catálogo incorporado; downloads de scripts exigem URLs pinadas em commits e hash SHA-256 válido. Os módulos podem ser desativados ou removidos individualmente.
 
-Abra o gerenciador clicando no ícone da extensão ou no menu radial, clique **Baixar e ativar** para Corrections ou Dates, e retorne à página do Moodle. O botão de cada módulo aparece automaticamente quando o registro é concluído. Quando estiver em rota inválida, aparece cinza. **Desativar** ou **Remover** não altera os outros módulos.
+## Desenvolvimento
 
-- Código remoto: `registry/packages/corrections-0.2.0.js`, `dates-0.2.0.js`.
-- Manifesto: `registry/catalog-v2.json`, SHA-256 verificado antes do registro em `chrome.userScripts`.
-- Sem `eval`, injeção de script no mundo MAIN, extensão extra ou ZIP de módulo instalado no Chrome.
-- O registro é realizado no mundo isolado USER_SCRIPT por módulo, sem acesso direto às APIs privilegiadas do host.
-- Versão **de demonstração**: Corrections somente enumera links de atividades, cursos e avaliação; Dates enumera atividades e links para edição manual. Os recursos legados completos **não** estão migrados ainda.
-- As versões estáveis anteriores de Corrections e Dates continuam disponíveis separadamente para operação até a migração concluída.
+- [Épico](https://github.com/Julioall/extensions/issues/1)
+- [Novo padrão de interface modal](https://github.com/Julioall/extensions/issues/9)
+- Testes automatizados de regressão: `cd apps/modules && npm test`.
 
-Consulte [SPIKE #8](https://github.com/Julioall/extensions/issues/8) e `docs/IMPLEMENTATION_PLAN.md`.
+A validação final ainda requer Chrome real, com a permissão User Scripts habilitada.
