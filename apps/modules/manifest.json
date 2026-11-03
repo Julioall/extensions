@@ -2,18 +2,23 @@
   "manifest_version": 3,
   "name": "Modules — Moodle",
   "short_name": "Modules",
-  "version": "0.3.0",
-  "description": "Modules: catálogo e módulos internos do Moodle em modais compactos.",
-  "minimum_chrome_version": "138",
+  "version": "0.4.0",
+  "description": "Modules: Corrections completo, Dates com painel original, catálogo mínimo e modais.",
+  "minimum_chrome_version": "114",
   "permissions": [
     "storage",
     "tabs",
-    "userScripts"
+    "downloads",
+    "alarms",
+    "scripting"
   ],
   "host_permissions": [
-    "https://raw.githubusercontent.com/*",
     "https://ead.fieg.com.br/*",
-    "https://ead.senai.br/*"
+    "https://ead.senai.br/*",
+    "https://huggingface.co/*",
+    "https://cdn-lfs.huggingface.co/*",
+    "https://*.hf.co/*",
+    "https://*.xethub.hf.co/*"
   ],
   "action": {
     "default_title": "Modules — Abrir catálogo no Moodle"
@@ -25,10 +30,10 @@
         "https://ead.senai.br/*"
       ],
       "js": [
-        "content-v3.js"
+        "content-v4.js"
       ],
       "css": [
-        "modal-v3.css"
+        "modal-v4.css"
       ],
       "run_at": "document_idle"
     }
@@ -39,7 +44,7 @@
     "128": "icons/128.png"
   },
   "background": {
-    "service_worker": "background-v3.js",
+    "service_worker": "background-v4.js",
     "type": "module"
   }
 }
