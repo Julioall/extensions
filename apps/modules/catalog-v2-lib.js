@@ -15,7 +15,7 @@ export function validDescriptor(m) {
   try {
     const u=new URL(m.scriptUrl);
     if(u.protocol!=='https:'||u.hostname!=='raw.githubusercontent.com'||u.port||u.username||u.password||u.search||u.hash) return false;
-    const match=u.pathname.match(/^\/Julioall\/extensions\/(feat\/modules-platform-foundation|[a-f0-9]{40})\/registry\/packages\/([a-z0-9-]+)-(\d+\.\d+\.\d+)\.js$/);
+    const match=u.pathname.match(/^\/Julioall\/extensions\/([a-f0-9]{40})\/registry\/packages\/([a-z0-9-]+)-(\d+\.\d+\.\d+)\.js$/);
     if(!match || match[2]!==m.id||match[3]!==m.version)return false;
   } catch {return false;}
   return true;
