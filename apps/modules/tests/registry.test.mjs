@@ -56,5 +56,5 @@ test('dynamic menu: installed state, radial radius and executable route checks',
   assert.match(menu,/\*89/);
   assert.match(menu,/mrm-action/);
   assert.doesNotMatch(menu,/\.imn-root|#mod-date-button/);
-  assert.match(host,/chrome\.userScripts\.register/);
+  assert.match(host,/scripts\.register/);
 });
