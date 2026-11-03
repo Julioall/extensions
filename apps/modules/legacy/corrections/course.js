@@ -497,7 +497,8 @@
     const col = {};
     for (const key of Object.keys(COLUMN_ALIASES)) col[key] = findHeaderIndex(headers, COLUMN_ALIASES[key]);
 
-    if (col.nome === -1 && col.id === -1) throw new Error('Cabeçalho obrigatório não encontrado: nome (ou id).');    if (col.nota === -1 && col.desempenho === -1 && col.feedback === -1 && col.situacao === -1) {
+    if (col.nome === -1 && col.id === -1) throw new Error('Cabeçalho obrigatório não encontrado: nome (ou id).');
+    if (col.nota === -1 && col.desempenho === -1 && col.feedback === -1 && col.situacao === -1) {
       throw new Error('Inclua ao menos uma coluna de ação: nota, feedback ou situacao.');
     }
 
@@ -996,7 +997,8 @@
       central.push(cd.buffer, name);
       offset += 30 + name.length + blob.size;
       if (offset >= MAX_32) throw new Error('O pacote passaria de 4 GB.');
-    }    const cdSize = central.reduce((s, p) => s + (p.byteLength ?? p.length), 0);
+    }
+    const cdSize = central.reduce((s, p) => s + (p.byteLength ?? p.length), 0);
     const end = new DataView(new ArrayBuffer(22));
     end.setUint32(0, 0x06054B50, true); end.setUint16(8, entries.length, true); end.setUint16(10, entries.length, true);
     end.setUint32(12, cdSize, true); end.setUint32(16, offset, true);
@@ -1495,7 +1497,8 @@
       run,
       cancel,
       reset,
-      warnOnce,      onEvent(fn) { listener = typeof fn === 'function' ? fn : () => {}; },
+      warnOnce,
+      onEvent(fn) { listener = typeof fn === 'function' ? fn : () => {}; },
       get state() { return { active, queued: queue.length, consecutiveFailures, open: Boolean(openReason), reason: openReason, cancelled, concurrency: limit, trips, pausedUntil }; },
     };
   };
@@ -1994,7 +1997,8 @@
     const endDate = parseDate(end?.getAttribute('datetime') || end?.getAttribute('data-course-end') || end?.getAttribute('data-enddate') || '');
     if (startDate && now < startDate) return 'inactive';
     if (endDate && now > endDate) return 'inactive';
-    if (startDate && endDate) return 'active';    // Alguns cartões não têm nó de status, mas apresentam uma etiqueta textual específica.
+    if (startDate && endDate) return 'active';
+    // Alguns cartões não têm nó de status, mas apresentam uma etiqueta textual específica.
     const label = [...card.querySelectorAll('.badge, .badge-pill, .coursecategory, .status')].map(n => norm(n.textContent));
     if (label.some(s => /^(em andamento|in progress)$/.test(s))) return 'active';
     if (label.some(s => /^(concluido|encerrado|finalizado|nao iniciado|not started)$/.test(s))) return 'inactive';
@@ -2493,7 +2497,8 @@
     for (let i = 0; i < prepared.length; i++) {
       const item = prepared[i];
       onProgress({ stage: 'download', done: i, total: prepared.length, name: item.name });
-      try {        const blob = await D.requestArchive(item, { origin });
+      try {
+        const blob = await D.requestArchive(item, { origin });
         const folder = [...item.folders, `${D.sanitizeSegment(item.name)} [${item.assignmentId}]`].map(x => D.sanitizeSegment(x)).join('/');
         const inner = IMN.zip.uniqueName(`${folder}/Envios - ${item.userIds.length} pendentes.zip`, used);
         parts.push({ name: inner, data: blob });
@@ -2992,7 +2997,8 @@
       const category = pageName(doc, 'Categoria');
       const entries = last.flatMap(r => r.results.filter(x => x.state === 'ok' && x.count > 0).map(x => ({ assignment: x.assignment, count: x.count, folders: [category, r.course.name], courseId: r.course.courseId, courseName: r.course.name })));
       const unverified = last.reduce((s, r) => s + (r.summary ? r.summary.unverified : 1), 0);
-      offerDownloads({ doc, win, bar, deps, entries, unverified });    });
+      offerDownloads({ doc, win, bar, deps, entries, unverified });
+    });
     return { bar, badges, scan, courses };
   }
 
@@ -3491,7 +3497,8 @@
         state.split = B.splitByActivity(rows);
       } catch (error) {
         state.split = null; state.phase = 'idle'; state.error = error.message; render(); return;
-      }      state.fileName = name;
+      }
+      state.fileName = name;
       state.rejected = state.split.rejected;
       state.phase = 'loading'; state.loaded = 0; render();
       const origin = win.location.origin;
@@ -3990,7 +3997,8 @@
   if (!isCourse && !isCategory) return;
 
   function start(attempt) {
-    const deps = IMN.radar.createDeps(window);    const ui = isCourse ? IMN.radar.initCourse(document, window, deps) : IMN.radar.initCategory(document, window, deps);
+    const deps = IMN.radar.createDeps(window);
+    const ui = isCourse ? IMN.radar.initCourse(document, window, deps) : IMN.radar.initCategory(document, window, deps);
     if (ui) {
       if (IMN.batchUi) IMN.batchUi.init(document, window, deps, ui.bar);
       // Iniciar a busca exige clique explícito na lupa.
@@ -4001,3 +4009,4 @@
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => start(0), { once: true });
   else start(0);
 })();
+
