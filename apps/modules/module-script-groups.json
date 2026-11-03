@@ -1,0 +1,126 @@
+{
+  "corrections": [
+    {
+      "id": "modules-corrections-0",
+      "matches": [
+        "https://ead.senai.br/mod/assign/view.php*",
+        "https://ead.fieg.com.br/mod/assign/view.php*"
+      ],
+      "js": [
+        "src/core/namespace.js",
+        "src/core/text.js",
+        "src/core/limits.js",
+        "src/core/grade.js",
+        "src/core/csv.js",
+        "src/core/xlsx.js",
+        "src/core/records.js",
+        "src/core/match.js",
+        "src/core/plan.js",
+        "src/core/batch.js",
+        "src/core/templates.js",
+        "src/page/moodle-grading.js",
+        "src/ui/dom.js",
+        "src/ui/dialog.js",
+        "src/ui/panel.js",
+        "src/content-main.js"
+      ],
+      "runAt": "document_idle",
+      "persistAcrossSessions": true,
+      "css": [
+        "src/styles/tokens.css",
+        "src/styles/foundation.css",
+        "src/styles/components.css",
+        "src/styles/radar.css",
+        "src/styles/package.css",
+        "src/styles/batch.css",
+        "src/styles/moodle.css"
+      ]
+    },
+    {
+      "id": "modules-corrections-1",
+      "matches": [
+        "https://ead.senai.br/course/view.php*",
+        "https://ead.fieg.com.br/course/view.php*",
+        "https://ead.senai.br/course/index.php*",
+        "https://ead.fieg.com.br/course/index.php*"
+      ],
+      "js": [
+        "src/core/namespace.js",
+        "src/core/text.js",
+        "src/core/limits.js",
+        "src/core/grade.js",
+        "src/core/csv.js",
+        "src/core/xlsx.js",
+        "src/core/records.js",
+        "src/core/match.js",
+        "src/core/plan.js",
+        "src/core/batch.js",
+        "src/core/zip-writer.js",
+        "src/page/moodle-grading.js",
+        "src/ui/dom.js",
+        "src/ui/icons.js",
+        "src/ui/dialog.js",
+        "src/radar/governor.js",
+        "src/radar/cache.js",
+        "src/radar/moodle-pages.js",
+        "src/radar/activity-materials.js",
+        "src/radar/scope.js",
+        "src/radar/scanner.js",
+        "src/radar/downloads.js",
+        "src/radar/local-ai.js",
+        "src/radar/enunciados.js",
+        "src/packages/package-service.js",
+        "src/packages/package-save.js",
+        "src/packages/package-flow.js",
+        "src/radar/radar-ui.js",
+        "src/batch/loader.js",
+        "src/batch/reconcile.js",
+        "src/batch/runner.js",
+        "src/batch/batch-ui.js",
+        "src/radar-main.js"
+      ],
+      "runAt": "document_idle",
+      "persistAcrossSessions": true,
+      "css": [
+        "src/styles/tokens.css",
+        "src/styles/foundation.css",
+        "src/styles/components.css",
+        "src/styles/radar.css",
+        "src/styles/package.css",
+        "src/styles/batch.css",
+        "src/styles/moodle.css"
+      ]
+    }
+  ],
+  "dates": [
+    {
+      "id": "modules-dates-0",
+      "matches": [
+        "https://ead.fieg.com.br/course/view.php*",
+        "https://ead.senai.br/course/view.php*"
+      ],
+      "js": [
+        "plan-core.js",
+        "course.js"
+      ],
+      "runAt": "document_idle",
+      "persistAcrossSessions": true,
+      "css": [
+        "ui.css"
+      ]
+    },
+    {
+      "id": "modules-dates-1",
+      "matches": [
+        "https://ead.fieg.com.br/course/modedit.php*",
+        "https://ead.senai.br/course/modedit.php*"
+      ],
+      "js": [
+        "form.js"
+      ],
+      "runAt": "document_idle",
+      "persistAcrossSessions": true,
+      "allFrames": true
+    }
+  ]
+}

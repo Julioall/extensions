@@ -1,0 +1,291 @@
+/* 1.5.1 · Integração visual com Moodle/Boost/Moove.
+ * A extensão usa as variáveis do tema Moodle e nunca altera elementos externos a .imn-*. */
+.imn-root, .imn-badge, .imn-launcher {
+  --primary: var(--bs-primary, #0f6cbf);
+  --primary-dark: #0959a0;
+  --imn-on-primary: #ffffff;
+  --ink: var(--bs-body-color, #212529);
+  --muted: var(--bs-secondary-color, #6c757d);
+  --surface: var(--bs-body-bg, #ffffff);
+  --surface2: var(--bs-tertiary-bg, #f8f9fa);
+  --border: var(--bs-border-color, #dee2e6);
+  --border-strong: var(--bs-secondary-color, #adb5bd);
+  --green: #176438;
+  --greenbg: #e9f6ef;
+  --red: #a4262c;
+  --redbg: #fff0f0;
+  --amber: #805400;
+  --amberbg: #fff8e6;
+  --info: #0b5996;
+  --infobg: #eef6fc;
+  --shadow: 0 8px 24px rgba(0, 0, 0, .12);
+  --radius-sm: var(--bs-border-radius, 6px);
+  --radius-md: var(--bs-border-radius, 6px);
+  --radius-lg: var(--bs-border-radius, 6px);
+  font: inherit;
+  color: var(--ink);
+}
+[data-bs-theme="dark"] :is(.imn-root, .imn-badge, .imn-launcher) {
+  --primary: var(--bs-link-color, #6ea8fe);
+  --imn-on-primary: #131d26;
+  --ink: var(--bs-body-color, #f1f3f5);
+  --muted: var(--bs-secondary-color, #adb5bd);
+  --surface: var(--bs-body-bg, #212529);
+  --surface2: var(--bs-tertiary-bg, #343a40);
+  --border: var(--bs-border-color, #495057);
+  --green: #8ad7aa;
+  --greenbg: #173d2a;
+  --red: #ffb2b7;
+  --redbg: #50272a;
+  --amber: #f9d782;
+  --amberbg: #4b371b;
+  --info: #a8d9ff;
+  --infobg: #253d50;
+  --shadow: 0 8px 24px rgba(0, 0, 0, .28);
+}
+.imn-root :is(button, input, textarea, select, summary, a):focus-visible,
+.imn-launcher:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+
+/* Compact toolbar; similar to a native Moodle card/secondary administration toolbar. */
+.imn-root.imn-bar {
+  padding: 12px 16px;
+  margin: 0 0 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+  background: var(--surface);
+  overflow: visible;
+}
+.imn-root.imn-bar::before { display: none; }
+.imn-radar-main { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 18px; }
+.imn-radar-heading { min-width: 215px; flex: 1 1 250px; }
+.imn-radar-heading h2 { margin: 0; font-size: 16px; font-weight: 650; line-height: 1.3; color: var(--ink); letter-spacing: 0; }
+.imn-radar-status { display: block; min-height: 20px; margin: 2px 0 0; }
+.imn-radar-status .imn-bar-status { color: var(--muted); font-size: 13px; font-weight: 400; line-height: 1.5; }
+.imn-bar[aria-busy="true"] .imn-bar-status { color: var(--primary); }
+.imn-bar-row { display: flex; align-items: center; gap: 8px; margin: 0; flex: 0 1 auto; }
+.imn-bar-row > .imn-download, .imn-bar-row > .imn-batch-open { order: 0; }
+.imn-bar-row > .imn-download { order: -1; }
+.imn-bar-row > .imn-batch-open { order: 0; }
+.imn-bar-row > .imn-refresh { order: 1; }
+.imn-bar-row > .imn-tools { order: 3; }
+.imn-bar-row .imn-spacer { display: none; }
+.imn-root .imn-btn, .imn-root .imn-file, .imn-root .imn-pill {
+  min-height: 36px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  box-shadow: none;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.imn-root .imn-btn:hover:not(:disabled), .imn-root .imn-pill:hover:not([aria-pressed="true"]) {
+  background: var(--surface2);
+  border-color: var(--border-strong);
+  color: var(--ink);
+}
+.imn-root .imn-btn.imn-primary, .imn-root .imn-btn.imn-primary:hover:not(:disabled) {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--imn-on-primary);
+}
+.imn-root .imn-btn.imn-primary:hover:not(:disabled) { filter: brightness(.94); }
+.imn-root .imn-btn:disabled { opacity: .55; cursor: not-allowed; }
+.imn-tools > summary, .imn-help > summary, .imn-advanced > summary, .imn-package-activities > summary {
+  display: inline-flex; align-items: center; min-height: 34px; padding: 5px 8px;
+  color: var(--primary); background: transparent; border-radius: var(--radius-sm);
+  cursor: pointer; font-size: 13px; font-weight: 500; list-style: revert;
+}
+.imn-tools[open] > summary { background: var(--surface2); }
+.imn-tools-content { padding: 5px 0 0; position: absolute; right: 0; top: calc(100% - 2px); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); box-shadow: var(--shadow); z-index: 2; }
+.imn-tools { position: relative; }
+.imn-root .imn-badge, .imn-badge {
+  min-width: 0; margin: 0 0 0 6px; padding: 2px 7px;
+  border: 1px solid var(--border); border-radius: 4px;
+  font-family: inherit; font-size: 12px; font-weight: 500; line-height: 1.4; white-space: nowrap;
+}
+.imn-badge-pending { background: var(--redbg); color: var(--red); border-color: var(--red); }
+.imn-badge-clear { background: var(--greenbg); color: var(--green); }
+.imn-badge-error { background: var(--amberbg); color: var(--amber); }
+.imn-bar-detail { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border); }
+
+/* Download review only reveals details on demand. */
+.imn-package-heading h3 { margin: 0; font-size: 16px; font-weight: 650; }
+.imn-package-summary { margin: 2px 0 6px; color: var(--muted); font-size: 14px; }
+.imn-package-activities { margin: 4px 0 8px; }
+.imn-package-list { border-radius: var(--radius-sm); max-height: 210px; margin-top: 5px; }
+.imn-package-item { display: flex; gap: 12px; justify-content: space-between; align-items: center; min-height: 36px; padding: 6px 10px; }
+.imn-package-item .imn-package-name { flex: 1; font-weight: 500; }
+.imn-package-actions { display: flex; gap: 8px; justify-content: flex-end; margin: 10px 0 0; padding: 10px 0 0; }
+.imn-package-outcome, .imn-package-progress { padding: 9px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.imn-package-outcome strong { font-weight: 600; }
+.imn-warning-details, .imn-warn, .imn-alert { border-radius: var(--radius-sm); font-size: 13px; }
+.imn-warning-details { margin-top: 8px; padding: 6px 10px; }
+.imn-warning-details > summary { font-weight: 500; }
+
+/* Standard Moodle modal, native controls and compact preview. */
+.imn-dialog { width: min(960px, 100%); max-height: calc(100dvh - 32px); padding: 20px 24px; border-radius: var(--radius-sm); box-shadow: var(--shadow); }
+.imn-root .imn-dialog { padding: 20px 24px; }
+.imn-dialog > * + * { margin-top: 12px; }
+.imn-root .imn-head { align-items: center; padding-bottom: 10px; }
+.imn-root .imn-head h2 { margin: 0; font-size: 19px; font-weight: 650; line-height: 1.25; letter-spacing: 0; }
+.imn-title-group > p { margin: 2px 0 0; font-size: 13px; }
+.imn-root .imn-close { width: 32px; height: 32px; border: 0; font-size: 24px; font-weight: 400; color: var(--muted); background: transparent; }
+.imn-root .imn-close:hover { background: var(--surface2); color: var(--ink); }
+.imn-root .imn-import-actions { padding: 0; border: 0; }
+.imn-root .imn-import-actions .imn-file { display: flex; justify-content: flex-start; flex-wrap: wrap; gap: 8px; min-width: 0; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 10px; }
+.imn-file input { color: var(--ink); cursor: pointer; }
+.imn-root .imn-file input { margin: 0; }
+.imn-details-content { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; padding: 4px 0 8px 8px; }
+.imn-help, .imn-advanced { border-top: 1px solid var(--border); padding-top: 2px; }
+.imn-root .imn-options label { padding: 2px; font-size: 13px; }
+.imn-root .imn-preview-heading { margin-top: 12px; }
+.imn-root .imn-preview-heading h3 { margin: 0; font-size: 16px; font-weight: 600; }
+.imn-filename { overflow-wrap: anywhere; font-size: 12px; }
+.imn-root .imn-counts { display: flex; flex-wrap: wrap; gap: 10px 14px; margin: 8px 0; }
+.imn-root .imn-count { display: inline-flex; align-items: baseline; gap: 6px; padding: 0; background: transparent; border: 0; color: var(--muted); font-size: 13px; font-weight: 400; }
+.imn-root .imn-count b { display: inline; color: var(--ink); font-size: 17px; font-weight: 700; }
+.imn-root .imn-count-blocked b { color: var(--red); }
+.imn-root .imn-count-flag b { color: var(--amber); }
+.imn-root .imn-summary { font-size: 13px; font-weight: 400; color: var(--muted); }
+.imn-root .imn-counts + .imn-summary { display: none; }
+.imn-root .imn-table-wrap { border-radius: var(--radius-sm); max-height: 48dvh; }
+.imn-root .imn-table :is(td, th) { padding: 7px 9px; }
+.imn-root .imn-table th { background: var(--surface2); color: var(--ink); font-size: 13px; font-weight: 600; }
+.imn-root .imn-input { min-height: 34px; border-radius: var(--radius-sm); }
+.imn-root .imn-input-feedback { min-height: 48px; }
+.imn-root .imn-note:empty { display: none; }
+.imn-root .imn-chip { padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+.imn-root .imn-foot { gap: 8px; padding-top: 10px; border-top: 1px solid var(--border); }
+.imn-root .imn-foot > .imn-muted { font-size: 13px; }
+.imn-root .imn-pill { min-height: 32px; padding: 4px 11px; border-radius: var(--radius-sm); }
+.imn-root .imn-pill[aria-pressed="true"] { background: var(--primary); color: var(--imn-on-primary); border-color: var(--primary); }
+.imn-root .imn-act { border-radius: var(--radius-sm); }
+.imn-root .imn-act-head { padding: 9px 12px; background: var(--surface2); }
+.imn-root .imn-step { border-radius: var(--radius-sm); }
+.imn-launcher { border-color: var(--border); color: var(--ink); background: var(--surface); border-radius: var(--radius-sm); font-weight: 500; min-height: 34px; }
+.imn-launcher:hover { background: var(--surface2); }
+@media (max-width: 790px) {
+  .imn-radar-main { align-items: stretch; }
+  .imn-radar-heading { flex: 1 1 100%; }
+  .imn-bar-row { width: 100%; flex-wrap: wrap; }
+  .imn-root .imn-btn { min-height: 38px; }
+  .imn-root .imn-dialog { padding: 14px; }
+}
+@media (max-width: 490px) {
+  .imn-bar-row > .imn-download { width: auto; flex: 1; }
+  .imn-bar-row > .imn-batch-open { flex: 1; }
+  .imn-bar-row > .imn-refresh { flex: 1; }
+  .imn-root .imn-counts { display: flex; }
+  .imn-root .imn-file { width: 100%; }
+  .imn-root .imn-file input { width: 100%; }
+  .imn-package-item { flex-wrap: wrap; }
+  .imn-package-sub { white-space: normal; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .imn-root *, .imn-root *::before, .imn-root *::after { transition: none !important; animation: none !important; }
+}
+
+/* 1.5.3 · Barra de ações com ícones nativos, sem textos redundantes.
+   O nome completo permanece em title e aria-label para mouse e leitores de tela. */
+.imn-root .imn-icon-button {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  min-height: 38px;
+  padding: 0;
+  flex: 0 0 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+}
+.imn-root .imn-icon { display: block; width: 18px; height: 18px; flex: none; }
+.imn-radar-status { display: flex; align-items: center; gap: 6px; }
+.imn-checking-icon { display: none; flex: none; color: var(--primary); }
+.imn-checking-icon .imn-icon { width: 14px; height: 14px; }
+.imn-bar[aria-busy="true"] .imn-checking-icon { display: inline-flex; }
+.imn-bar[aria-busy="true"] .imn-checking-icon .imn-icon { animation: imn-icon-rotate 1.4s linear infinite; }
+@keyframes imn-icon-rotate { to { transform: rotate(360deg); } }
+.imn-root .imn-btn.imn-copy { order: 3; }
+.imn-bar-row > .imn-copy, .imn-bar-row > .imn-download,
+.imn-bar-row > .imn-batch-open, .imn-bar-row > .imn-refresh { flex: 0 0 38px; }
+@media (max-width: 490px) {
+  .imn-bar-row > .imn-icon-button.imn-download,
+  .imn-bar-row > .imn-icon-button.imn-batch-open,
+  .imn-bar-row > .imn-icon-button.imn-refresh,
+  .imn-bar-row > .imn-icon-button.imn-copy { flex: 0 0 38px; width: 38px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .imn-bar[aria-busy="true"] .imn-checking-icon .imn-icon { animation: none; }
+}
+
+/* 1.5.4 · Não exibir selos até a primeira busca manual. */
+.imn-badge[hidden] { display: none !important; }
+
+/* 1.5.5: três ações no fluxo natural do professor; sem diagnósticos ou menus técnicos. */
+.imn-bar-row > .imn-refresh { order: 0; }
+.imn-bar-row > .imn-download { order: 1; }
+.imn-bar-row > .imn-batch-open { order: 2; }
+.imn-import-guidance, .imn-next-step { color: var(--muted); font-size: 13px; margin: 6px 0; }
+.imn-result-audit { margin-top: 8px; border-top: 1px solid var(--border); padding-top: 8px; }
+.imn-result-audit > summary { color: var(--muted); cursor: pointer; font-size: 13px; }
+.imn-result-audit .imn-report { margin-top: 8px; }
+
+/* 1.5.6 — barra de ações abaixo do título, alinhada à direita (sem cartão). */
+.imn-root.imn-bar.imn-toolbar {
+  width: 100%; max-width: 100%; padding: 0; margin: 2px 0 8px;
+  border: 0; border-radius: 0; box-shadow: none; background: transparent;
+}
+.imn-toolbar .imn-radar-main {
+  display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
+}
+.imn-toolbar .imn-bar-row {
+  width: auto; display: inline-flex; flex-wrap: nowrap; justify-content: flex-end;
+  align-items: center; gap: 8px; margin: 0;
+}
+.imn-toolbar .imn-radar-status {
+  display: none; min-height: 0; margin: 0; text-align: right; max-width: min(100%, 550px);
+}
+.imn-toolbar[data-searched="true"] .imn-radar-status,
+.imn-toolbar[aria-busy="true"] .imn-radar-status { display: flex; justify-content: flex-end; }
+.imn-toolbar .imn-bar-status { font-size: 12px; }
+.imn-toolbar .imn-icon-button { width: 40px; height: 40px; min-width: 40px; min-height: 40px; }
+.imn-toolbar .imn-bar-row > .imn-icon-button.imn-refresh,
+.imn-toolbar .imn-bar-row > .imn-icon-button.imn-download,
+.imn-toolbar .imn-bar-row > .imn-icon-button.imn-batch-open { flex: 0 0 40px; width: 40px; }
+.imn-toolbar .imn-bar-detail:not([hidden]) { margin-top: 10px; width: 100%; }
+@media (max-width: 490px) {
+  .imn-toolbar .imn-radar-main { align-items: flex-end; }
+  .imn-toolbar .imn-bar-row { width: auto; flex-wrap: nowrap; }
+  .imn-toolbar .imn-bar-row > .imn-icon-button.imn-refresh,
+  .imn-toolbar .imn-bar-row > .imn-icon-button.imn-download,
+  .imn-toolbar .imn-bar-row > .imn-icon-button.imn-batch-open { flex: 0 0 40px; width: 40px; }
+}
+
+/* A lupa se torna atualização animada somente durante a consulta manual. */
+.imn-toolbar .imn-refresh.imn-searching .imn-icon { animation: imn-icon-rotate 1.1s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+  .imn-toolbar .imn-refresh.imn-searching .imn-icon { animation: none; }
+}
+
+/* Ações compactas de professor */
+.imn-toolbar .imn-icon-button.imn-success { background:#198754!important; border-color:#198754!important; color:#fff!important; }
+.imn-toolbar .imn-icon-button.imn-success .imn-icon { color:#fff!important; }
+.imn-toolbar .imn-downloading .imn-icon { animation:imn-icon-rotate 1s linear infinite; }
+.imn-toolbar .imn-radar-status:empty {display:none!important;}
+.imn-compact-details { margin: 8px 0; }
+.imn-compact-details > summary { cursor:pointer; color:var(--primary,#006cbf); }
+@media (prefers-reduced-motion:reduce) { .imn-toolbar .imn-downloading .imn-icon {animation:none;} }
+
+/* 1.7.6: o leque flutuante reúne os atalhos; a barra interna mantém
+   processamento e relatórios, sem duplicar botões no cabeçalho. */
+.imn-root.imn-bar:not([data-searched="true"]) { display: none; }
+.imn-root.imn-bar .imn-bar-row { display: none !important; }
+.imn-root.imn-bar[data-searched="true"] { display: block; }
+.imn-root.imn-bar[data-searched="true"] .imn-radar-main { justify-content: flex-start; }
+/* A opção radial "Importar notas" abre o painel correspondente à rota. */
+.imn-launcher { display: none !important; }

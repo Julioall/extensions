@@ -2,23 +2,8 @@
   "schemaVersion": 1,
   "id": "corrections",
   "name": "Corrections",
-  "version": "1.7.8",
-  "kind": "extension",
-  "minimumHostVersion": "0.1.0",
-  "compatibleHosts": [
-    "ead.fieg.com.br",
-    "ead.senai.br"
-  ],
-  "capabilities": [
-    "scan-pending",
-    "download-submissions",
-    "import-grades"
-  ],
-  "routes": [
-    "/course/view.php",
-    "/course/index.php",
-    "/mod/assign/view.php?action=grading"
-  ],
-  "runtime": "independent-mv3",
-  "sourceMigration": "pending"
+  "version": "1.7.9",
+  "kind": "packaged-content-scripts",
+  "source": "apps/modules/src/",
+  "originalFilesUnchanged": true
 }

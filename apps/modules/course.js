@@ -327,13 +327,7 @@
     if (apply) apply.disabled = !!message || job?.status === 'running';
   }
 
-  function close() {
-    const current = overlay;
-    overlay = null;
-    if (!current) return;
-    if (typeof globalThis.__mrmReturnModal === 'function') globalThis.__mrmReturnModal(current);
-    else current.remove();
-  }
+  function close() { overlay?.remove(); overlay = null; }
   function openEditor() {
     initModules();
     view = 'editor';

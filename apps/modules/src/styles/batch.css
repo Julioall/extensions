@@ -1,0 +1,90 @@
+/* Lançamento em lote */
+.imn-counts { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; }
+.imn-count { padding: 10px 12px; border-radius: 10px; background: var(--surface2); border: 1px solid var(--border); color: var(--muted); font-weight: 700; }
+.imn-count b { display: block; font-size: 26px; line-height: 1.2; color: var(--ink); }
+.imn-count-ready { background: var(--greenbg); border-color: transparent; color: var(--green); }
+.imn-count-ready b { color: var(--green); }
+.imn-count-unchanged { background: var(--infobg); border-color: transparent; color: var(--info); }
+.imn-count-unchanged b { color: var(--info); }
+.imn-count-blocked { background: var(--redbg); border-color: transparent; color: var(--red); }
+.imn-count-blocked b { color: var(--red); }
+.imn-count-flag { background: var(--amberbg); border-color: transparent; color: var(--amber); }
+.imn-count-flag b { color: var(--amber); }
+.imn-pill { min-height: 36px; padding: 0 14px; border: 1px solid var(--border-strong, var(--border)); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; cursor: pointer; }
+.imn-pill[aria-pressed="true"] { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 700; }
+.imn-acts > * + * { margin-top: 10px; }
+.imn-act { border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.imn-act-head { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; width: 100%; padding: 10px 14px; border: 0; background: var(--surface2); color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+.imn-act-chips { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.imn-act-body { padding: 10px 12px; }
+.imn-act-body > * + * { margin-top: 8px; }
+.imn-chip.imn-neutral { background: var(--surface); border: 1px solid var(--border); color: var(--muted); }
+.imn-chip.imn-flagchip { background: var(--amberbg); color: var(--amber); }
+.imn-flag { color: var(--amber); }
+.imn-row-flagged { box-shadow: inset 3px 0 0 var(--amber); }
+.imn-bar-track { height: 10px; background: var(--border); border-radius: 999px; overflow: hidden; }
+.imn-bar-track i { display: block; height: 100%; background: var(--primary); }
+.imn-progress > * + * { margin-top: 8px; }
+.imn-step { display: flex; align-items: flex-start; gap: 12px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--surface2); }
+.imn-step-dot { flex: none; display: inline-flex; width: 26px; height: 26px; border-radius: 999px; align-items: center; justify-content: center; font-weight: 800; background: var(--border); color: var(--muted); }
+.imn-step-ok { background: var(--greenbg); border-color: var(--green); color: var(--green); }
+.imn-step-ok .imn-step-dot { background: var(--green); color: #fff; }
+.imn-step-active { background: var(--infobg); border-color: var(--primary); color: var(--info); border-width: 2px; }
+.imn-step-active .imn-step-dot { background: var(--primary); color: #fff; }
+.imn-step-bad { background: var(--redbg); border-color: var(--red); color: var(--red); }
+.imn-step-bad .imn-step-dot { background: var(--red); color: #fff; }
+.imn-banner-line { margin: 0; padding: 8px 12px; border-radius: 8px; background: var(--infobg); color: var(--info); }
+
+/* 1.5.2 · Resultado enxuto, seguindo cartões e controles do Moodle/Boost. */
+.imn-result-message { border: 1px solid var(--border); background: var(--surface2); padding: 14px 16px; border-radius: var(--radius-md); }
+.imn-result-message strong { font-size: 16px; font-weight: 650; display: block; }
+.imn-result-message p { margin: 5px 0 0; color: var(--muted); line-height: 1.45; }
+.imn-result-message-ok { border-inline-start: 4px solid var(--green); }
+.imn-result-message-attention { border-inline-start: 4px solid var(--amber); }
+.imn-result-stats { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; }
+.imn-result-stats > div { display: flex; gap: 3px; flex-direction: column; padding: 12px 16px; }
+.imn-result-stats > div + div { border-inline-start: 1px solid var(--border); }
+.imn-result-stats strong { font-size: 24px; line-height: 1.15; font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.imn-result-stats span { font-size: 13px; color: var(--muted); }
+.imn-result-actions { margin-top: 14px; gap: 8px; }
+.imn-result-details { border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--surface); }
+.imn-result-details > summary { padding: 10px 14px; font-size: 14px; cursor: pointer; color: var(--primary); }
+.imn-result-list { padding: 0 14px 12px; }
+.imn-result-row { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-top: 1px solid var(--border); }
+.imn-result-row-info { display: flex; flex-direction: column; gap: 3px; min-width: 0; flex: 1; }
+.imn-result-row-info a { color: var(--primary); font-weight: 600; text-decoration: none; }
+.imn-result-row-info a:hover { text-decoration: underline; }
+.imn-result-row-info small { font-size: 12px; }
+.imn-result-indicator { width: 21px; height: 21px; display: inline-flex; align-items: center; justify-content: center; flex: none; border-radius: 50%; background: var(--surface2); color: var(--muted); font-size: 12px; font-weight: 700; }
+.imn-result-conferido, .imn-result-sem_alteracao { background: var(--greenbg); color: var(--green); }
+.imn-result-divergente, .imn-result-nao_verificada { background: var(--amberbg); color: var(--amber); }
+.imn-result-full > .imn-result-list > .imn-result-details { margin-top: 12px; }
+.imn-result-full > .imn-result-list > .imn-result-details > .imn-table-wrap { margin: 0 10px 10px; }
+.imn-value-cell { max-width: 390px; max-height: 88px; overflow: auto; font-size: 13px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.imn-retry { border-inline-start: 3px solid var(--amber); padding: 6px 12px; }
+.imn-retry .imn-btn { font-size: 13px; }
+.imn-retry-confirm { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.imn-retry-confirm p { width: 100%; margin: 0 0 4px; color: var(--muted); font-size: 13px; }
+@media (max-width: 540px) {
+  .imn-result-stats > div { padding: 10px 8px; }
+  .imn-result-stats strong { font-size: 21px; }
+  .imn-result-stats span { font-size: 11px; line-height: 1.3; }
+  .imn-result-actions { flex-direction: column; align-items: stretch; }
+  .imn-result-actions > button { justify-content: center; }
+}
+
+/* 1.6.0 — Uma lista única de correção, sem painéis técnicos. */
+.imn-learner-list { max-height: min(50vh, 490px); overflow: auto; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); }
+.imn-learner-row { display:flex; gap: 10px; padding: 10px 12px; align-items: flex-start; border-bottom: 1px solid var(--border); }
+.imn-learner-row:last-child { border-bottom: 0; }
+.imn-learner-status { display:inline-flex; flex:none; justify-content:center; align-items:center; border-radius:50%; width:22px; height:22px; background:var(--surface2); color:var(--muted); font-weight:700; }
+.imn-learner-ok { background:var(--greenbg); color:var(--green); }
+.imn-learner-error { background:var(--redbg); color:var(--red); }
+.imn-learner-running { background:var(--infobg); color:var(--info); }
+.imn-learner-body { flex:1; min-width:0; }
+.imn-learner-body strong { font-size: 14px; }
+.imn-learner-meta { display:flex; flex-wrap: wrap; gap: 4px 14px; color:var(--muted); font-size: 12px; }
+.imn-feedback-preview { max-width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.imn-learner-details { font-size:12px; margin-top:6px; overflow-wrap:anywhere; }
+.imn-learner-details summary { color:var(--primary); cursor:pointer; }
+.imn-route-line { font-family:monospace; overflow-wrap:anywhere; }

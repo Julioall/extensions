@@ -1,32 +1,29 @@
-name: Validate Modules
+name: Validate original Moodle modules
 on:
   pull_request:
   push:
     branches: [main, "feat/**"]
 jobs:
-  verify-and-package:
+  verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: JavaScript syntax check
+      - name: Check master scripts
         run: |
-          node --check apps/modules/content-v4.js
-          node --check apps/modules/background-v4.js
-          find apps/modules/legacy -name '*.js' -print0 | xargs -0 -n1 node --check
-      - name: Compatibility and isolation tests
-        working-directory: apps/modules
-        run: npm test
-      - name: Build installable master
+          node --check apps/modules/modules-background.js
+          node --check apps/modules/popup.js
+          node --check apps/modules/radial.js
+      - name: Verify original source integrity, routes and catalog
+        run: node --test apps/modules/tests/compatibility.test.mjs
+      - name: Build installable extension
         run: |
           cd apps/modules
-          zip -q -r ../../Modules-0.4.0.zip manifest.json content-v4.js background-v4.js modal-v4.css catalog-v4.json README.md icons legacy
-          cd ../..
-          unzip -t Modules-0.4.0.zip | tail -2
+          zip -q -r ../../Modules-v0.5.0.zip . -x 'tests/*' 'compat-integrity.json'
       - uses: actions/upload-artifact@v4
         with:
-          name: Modules-0.4.0
-          path: Modules-0.4.0.zip
+          name: Modules-v0.5.0
+          path: Modules-v0.5.0.zip
           if-no-files-found: error

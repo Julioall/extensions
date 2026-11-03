@@ -1,24 +1,29 @@
-# Modules v0.4.0 — Compatibilidade com os módulos completos
+# Modules v0.5.0 — preservar Corrections e Dates
 
-Instale **somente a extensão Modules** no Chrome. Esta versão recupera o motor completo das versões anteriores de Corrections (1.7.8) e Dates (1.3.8) dentro da extensão mestre.
+Esta versão instala **somente o Modules** como extensão do Chrome. O catálogo aparece exclusivamente ao clicar no ícone da extensão na barra do navegador. Ele apresenta somente nome, versão e três botões de ícone (instalar, atualizar, remover). Não há atalho Modules no menu radial do Moodle.
 
-## Uso
+O menu radial mantém os **quatro controles originais** (Corrections: buscar, baixar, importar; Dates: abrir o editor). Os cliques levam diretamente aos controles originais, sem modais artificiais sobre as telas dos módulos. O editor de Dates e os fluxos de notas e downloads continuam a usar o código JavaScript e CSS original, copiado **byte a byte** dos pacotes fornecidos.
 
-1. Extraia o ZIP e abra `chrome://extensions` → **Modo do desenvolvedor** → **Carregar sem compactação**.
-2. Se você já tiver Corrections e Dates como extensões Chrome, desative essas versões para evitar execução duplicada.
-3. Entre em uma página de curso ou categoria do Moodle SENAI/FIEG.
-4. Abra o botão radial no canto inferior direito e clique em **Modules**. O catálogo só mostra **nome, versão e três ícones:** instalar, atualizar e remover. O ícone de atualização fica cinza quando não existe uma versão nova incluída.
-5. Ative Corrections e Dates. O Corrections adiciona **buscar, baixar, importar**; o Dates adiciona **Ajustar datas**, com o painel completo e gravação conferida pelo Moodle.
+## Instalação
 
-## Comportamento preservado
+1. Extraia o ZIP e abra `chrome://extensions`.
+2. Ative **Modo do desenvolvedor**, clique **Carregar sem compactação** e selecione a pasta extraída.
+3. Desative as instalações antigas separadas de Corrections e Dates, para evitar execução duplicada.
+4. Clique no ícone **Modules** no Chrome e use o ícone **Instalar** na linha de cada módulo desejado.
+5. **Recarregue a página do Moodle** após instalar/remover um módulo; o Chrome só aplica o registro/removal de content scripts a novos carregamentos de página.
 
-- Corrections: busca de envios pendentes em cursos e categorias, downloads, importação CSV/XLSX em lote e importação da tela de avaliação.
-- Dates: tabela completa, leitura automática de datas, preenchimento rápido, identificação do cronograma e gravação com verificação em iframe oculto.
-- Ações aparecem somente nas rotas corretas; botões sem ação disponível ficam cinza.
-- Corrections exibe seus botões de ação **dentro do próprio modal**; Dates mantém o painel original, com abertura animada a partir do botão radial.
+## Funcionalidades preservadas
 
-## Limitação importante
+- Corrections v1.7.9: varredura manual de curso/categoria, pendências, ZIPs, importação CSV/XLSX em lote, importação na avaliação e seus modais originais.
+- Dates v1.3.9: modal original de edição de datas, cronograma, tabela de atividades, processamento em iframe oculto e verificação dos salvamentos.
+- Radial: quatro ações no canto direito, habilitadas ou cinzas conforme o contexto e os botões originais.
 
-A 0.4 é uma **versão de compatibilidade**, com os motores completos incorporados como arquivos locais e ativados individualmente via `chrome.scripting.registerContentScripts`. Não baixa ainda a lógica completa de cada módulo do GitHub para atualizá-la independentemente do mestre. O catálogo instalado/atualizado funciona, mas a distribuição independente exigirá uma camada segura adicional que transporte código ou serviços privilegiados de cada módulo. Não declare uma atualização remota quando não houver pacote novo.
+## O que o catálogo faz nesta versão
 
-**Validação:** testes de sintaxe e consistência de conteúdo originais; teste Chrome/Moodle real pendente neste ambiente por bloqueio de navegação do navegador de testes.
+**Instalar** ativa um dos módulos **já embarcados neste pacote**, sem criar outra extensão Chrome. **Remover** impede novas injeções de suas telas/ações após recarregar a página. **Atualizar** só fica ativo quando uma versão posterior estiver embarcada em uma atualização do Modules.
+
+**Ainda não há download ou atualização independente do código completo pelo GitHub nesta versão.** Essa parte exigirá um serviço privilegiado/arquitetura de distribuição segura que preserve os módulos originais. Nenhum código das extensões foi reescrito para simular essa funcionalidade.
+
+## Testes
+
+A construção compara hashes SHA-256 de todos os scripts e estilos copiados com os dois ZIPs originais. Também verifica o manifesto Chrome, o mapeamento completo dos scripts por rota e os endpoints do catálogo. O teste operacional definitivo no Moodle real precisa ser realizado no Chrome do usuário.
