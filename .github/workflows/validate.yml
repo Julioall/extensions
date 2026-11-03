@@ -30,7 +30,7 @@ jobs:
       - name: Build Modules installable ZIP
         run: |
           cd apps/modules
-          zip -q -r ../../modules-master-0.2.0.zip . -x "tests/*"
+          zip -q -r ../../modules-master-0.2.0.zip manifest.json background-v2.js content-v2.js radial.css manager.html manager.css manager-v2.js catalog-v2-lib.js catalog-v2.json icons README.md package.json
       - uses: actions/upload-artifact@v4
         with:
           name: modules-master-0.2.0
