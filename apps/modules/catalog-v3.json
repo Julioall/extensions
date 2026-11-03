@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 3,
+  "repository": "Julioall/extensions",
+  "channel": "development",
+  "modules": [
+    {
+      "id": "corrections",
+      "name": "Corrections",
+      "description": "",
+      "version": "0.3.0",
+      "kind": "userScript",
+      "icon": "file-check",
+      "routes": [
+        "course",
+        "category",
+        "grading"
+      ],
+      "scriptUrl": "https://raw.githubusercontent.com/Julioall/extensions/99d1cef4a5403101be21f188b78eb01c4a770c23/registry/packages/corrections-0.3.0.js",
+      "sha256": "cd101c5b109d0c0dd1b615396a52544f3d2313ff8ae3daf25d4465d74dd60963",
+      "maxBytes": 32768,
+      "capabilities": [
+        "read-dom"
+      ]
+    },
+    {
+      "id": "dates",
+      "name": "Dates",
+      "description": "",
+      "version": "0.3.0",
+      "kind": "userScript",
+      "icon": "calendar-days",
+      "routes": [
+        "course"
+      ],
+      "scriptUrl": "https://raw.githubusercontent.com/Julioall/extensions/052d8fc1c464401f9f89b7e0708586fb62ce2bfd/registry/packages/dates-0.3.0.js",
+      "sha256": "7516d9bb2f25be76fcc84e487c40389e3a6e1686921a758791027ce060455d61",
+      "maxBytes": 32768,
+      "capabilities": [
+        "read-dom"
+      ]
+    }
+  ]
+}

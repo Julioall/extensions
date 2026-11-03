@@ -1,4 +1,4 @@
-export const REMOTE_CATALOG = 'https://raw.githubusercontent.com/Julioall/extensions/feat/modules-platform-foundation/registry/catalog-v2.json';
+export const REMOTE_CATALOG = 'https://raw.githubusercontent.com/Julioall/extensions/feat/modules-modal-ux/registry/catalog-v3.json';
 const HASH=/^[a-f0-9]{64}$/i;
 const VERSION=/^\d+\.\d+\.\d+$/;
 const ID=/^[a-z][a-z0-9-]{1,39}$/;
@@ -21,7 +21,7 @@ export function validDescriptor(m) {
   return true;
 }
 export function validCatalog(cat) {
-  if(!cat || cat.schemaVersion!==2 || cat.repository!=='Julioall/extensions'||!Array.isArray(cat.modules))return false;
+  if(!cat || cat.schemaVersion!==3 || cat.repository!=='Julioall/extensions'||!Array.isArray(cat.modules))return false;
   const ids=new Set();
   for(const m of cat.modules){if(!validDescriptor(m)||ids.has(m.id))return false;ids.add(m.id);}
   return true;

@@ -2,8 +2,8 @@
   "manifest_version": 3,
   "name": "Modules — Moodle",
   "short_name": "Modules",
-  "version": "0.2.0",
-  "description": "Modules: catálogo instalável de componentes Moodle via User Scripts; menu radial dinâmico.",
+  "version": "0.3.0",
+  "description": "Modules: catálogo e módulos internos do Moodle em modais compactos.",
   "minimum_chrome_version": "138",
   "permissions": [
     "storage",
@@ -16,10 +16,8 @@
     "https://ead.senai.br/*"
   ],
   "action": {
-    "default_title": "Modules — Gerenciar módulos",
-    "default_popup": "manager.html"
+    "default_title": "Modules — Abrir catálogo no Moodle"
   },
-  "options_page": "manager.html",
   "content_scripts": [
     {
       "matches": [
@@ -27,10 +25,10 @@
         "https://ead.senai.br/*"
       ],
       "js": [
-        "content-v2.js"
+        "content-v3.js"
       ],
       "css": [
-        "radial.css"
+        "modal-v3.css"
       ],
       "run_at": "document_idle"
     }
@@ -41,7 +39,7 @@
     "128": "icons/128.png"
   },
   "background": {
-    "service_worker": "background-v2.js",
+    "service_worker": "background-v3.js",
     "type": "module"
   }
 }

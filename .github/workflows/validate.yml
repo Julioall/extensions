@@ -11,28 +11,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Syntax check (Modules host)
+      - name: Syntax check
         run: |
-          node --check apps/modules/content-v2.js
-          node --check apps/modules/background-v2.js
-          node --check apps/modules/manager-v2.js
-          node --check apps/modules/catalog-v2-lib.js
-          node --check registry/packages/corrections-0.2.0.js
-          node --check registry/packages/dates-0.2.0.js
-          node --check apps/modules/manager-v2.js
-          node --check apps/modules/catalog-lib.js
-      - name: Unit tests
+          node --check apps/modules/content-v3.js
+          node --check apps/modules/background-v3.js
+          node --check apps/modules/catalog-v3-lib.js
+          node --check registry/packages/corrections-0.3.0.js
+          node --check registry/packages/dates-0.3.0.js
+      - name: Tests
         working-directory: apps/modules
         run: npm test
-      - name: Verify module manifests
-        run: |
-          node -e "for (const id of ['corrections','dates']) {const x=require('./modules/'+id+'/module.json'); if(x.id !== id || x.schemaVersion !== 1) process.exit(1)}"
-      - name: Build Modules installable ZIP
+      - name: Build minimal extension ZIP
         run: |
           cd apps/modules
-          zip -q -r ../../modules-master-0.2.0.zip manifest.json background-v2.js content-v2.js radial.css manager.html manager.css manager-v2.js catalog-v2-lib.js catalog-v2.json icons README.md package.json
+          zip -q -r ../../Modules-0.3.0.zip manifest.json background-v3.js content-v3.js modal-v3.css catalog-v3-lib.js catalog-v3.json icons README.md
       - uses: actions/upload-artifact@v4
         with:
-          name: modules-master-0.2.0
-          path: modules-master-0.2.0.zip
+          name: Modules-0.3.0
+          path: Modules-0.3.0.zip
           if-no-files-found: error

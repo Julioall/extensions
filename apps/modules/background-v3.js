@@ -1,4 +1,4 @@
-import {validDescriptor,routeOf,MOODLE_MATCHES} from './catalog-v2-lib.js';
+import {validDescriptor,validCatalog,REMOTE_CATALOG,routeOf,MOODLE_MATCHES} from './catalog-v3-lib.js';
 /* Modules host: only packaged privileged code; downloaded modules execute exclusively via chrome.userScripts. */
 const STORE='installedModules';
 const idFor=id=>'mrm-'+id;
@@ -96,7 +96,7 @@ async function activate(id,sender){
   const scope=routeOf(sender.tab.url);
   const state=await getState(),m=state[id];
   if(!m?.enabled||!m.routes.includes(scope))fail('Módulo indisponível nesta rota.');
-  const snippet='globalThis.__mrmModules?.['+JSON.stringify(id)+']?.invoke?.();';
+  const snippet='globalThis.__mrmModules?.['+JSON.stringify(id)+']?.render?.(document.getElementById("mrm-modal-body"));';
   // No imported page code has direct access to chrome.tabs/downloads/storage.
   // A future privileged bridge must validate every operation and site explicitly.
   await (await api()).execute({target:{tabId:sender.tab.id,frameIds:[0]},world:'USER_SCRIPT',
@@ -110,13 +110,39 @@ async function restore(){
     try{if(entry.enabled)await addOrUpdate(entry);else await removeLive(entry.id);}catch(e){console.warn('[Modules] could not restore',entry.id,e);}
   }
 }
+async function loadCatalog(){
+  const local=await fetch(chrome.runtime.getURL('catalog-v3.json')).then(r=>r.json());
+  if(!validCatalog(local))fail('Catálogo interno inválido.');
+  const controller=new AbortController(), timer=setTimeout(()=>controller.abort(),5000);
+  try{
+    const response=await fetch(REMOTE_CATALOG,{credentials:'omit',cache:'no-store',redirect:'error',signal:controller.signal});
+    if(!response.ok)throw Error('Catálogo indisponível');
+    const raw=await response.text();
+    if(raw.length>131072)throw Error('Catálogo acima do limite');
+    const parsed=JSON.parse(raw);
+    if(!validCatalog(parsed))throw Error('Catálogo remoto inválido');
+    return parsed;
+  }catch{return local;}
+  finally{clearTimeout(timer);}
+}
+chrome.action.onClicked.addListener(async tab=>{
+  if(!isMoodleTab(tab))return;
+  try{await chrome.tabs.sendMessage(tab.id,{source:'mrm-host',action:'openCatalog'});}
+  catch(e){console.warn('[Modules] Abra ou atualize uma página de curso Moodle.',e);}
+});
 chrome.runtime.onInstalled.addListener(info=>{if(info.reason==='update')restore().catch(console.error);});
 chrome.runtime.onStartup.addListener(()=>restore().catch(console.error));
 chrome.runtime.onMessage.addListener((m,sender,reply)=>{
   if(sender.id!==chrome.runtime.id||!m||m.source!=='mrm-host')return;
   (async()=>{
-    if(m.action==='state')return {installed:await getState(),available:(await api().then(()=>true).catch(()=>false))};
-    if(m.action==='openManager'){await chrome.runtime.openOptionsPage();return {opened:true};}
+    if(m.action==='state') {
+      const data=await getState();
+      const installed=Object.fromEntries(Object.entries(data).map(([id,item])=>[id,{
+        id:item.id,name:item.name,version:item.version,enabled:item.enabled
+      }]));
+      return {installed,available:(await api().then(()=>true).catch(()=>false))};
+    }
+    if(m.action==='catalog')return loadCatalog();
     if(m.action==='install')return install(m.descriptor);
     if(m.action==='toggle')return toggle(m.id,m.enabled);
     if(m.action==='remove')return remove(m.id);
