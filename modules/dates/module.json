@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "id": "dates",
+  "name": "Dates",
+  "version": "1.3.9",
+  "kind": "packaged-content-scripts",
+  "source": "apps/modules/",
+  "originalFilesUnchanged": true
+}

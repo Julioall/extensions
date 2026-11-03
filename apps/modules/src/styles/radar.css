@@ -1,0 +1,54 @@
+/* Radar de pendências */
+.imn-bar { margin: 0 0 16px; padding: 12px 16px; background: var(--surface); border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow); }
+.imn-bar-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.imn-spacer { flex: 1 1 auto; }
+.imn-bar-detail { margin-top: 10px; }
+.imn-bar-detail > * + * { margin-top: 8px; }
+.imn-bar-detail p { margin: 0; }
+.imn-badge { display: inline-block; margin-left: 6px; padding: 1px 10px; border-radius: 999px; font: 700 12px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; vertical-align: middle; white-space: nowrap; }
+.imn-badge-loading { background: var(--infobg); color: var(--info); }
+.imn-badge-pending { background: var(--redbg); color: var(--red); }
+.imn-badge-clear { background: var(--greenbg); color: var(--green); }
+.imn-badge-na { background: var(--infobg); color: var(--info); }
+.imn-badge-error { background: var(--amberbg); color: var(--amber); }
+/* Mesa de correção embutida no topo do curso. Hierarquia: contexto, situação, ação. */
+.imn-root.imn-bar {
+  position: relative; overflow: hidden; padding: clamp(16px, 2.6vw, 26px);
+  margin-bottom: 20px; border-radius: var(--radius-lg);
+  border: 1px solid var(--border); box-shadow: var(--shadow); background: var(--surface);
+}
+.imn-root.imn-bar::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 5px; background: var(--primary); }
+.imn-radar-head { display: flex; gap: 14px; align-items: flex-start; }
+.imn-brand-mark {
+  display: grid; flex: none; place-items: center; width: 45px; height: 45px;
+  border-radius: 10px; background: var(--primary); color: #fff;
+  font-size: 15px; letter-spacing: -.025em; font-weight: 800;
+}
+.imn-radar-heading h2 { margin: 0 0 3px; line-height: 1.2; font-size: clamp(20px, 2vw, 26px); letter-spacing: -.025em; color: var(--ink); }
+.imn-radar-heading p { max-width: 68ch; margin: 0; color: var(--muted); }
+.imn-radar-workspace { margin-top: 18px; padding: 14px 0 0; border-top: 1px solid var(--border); }
+.imn-radar-status { display: flex; gap: 10px; align-items: center; min-height: 26px; margin-bottom: 14px; }
+.imn-status-indicator { width: 9px; height: 9px; flex: none; background: var(--primary); border-radius: 50%; }
+.imn-bar[aria-busy="true"] .imn-status-indicator { animation: imn-breathe 1.2s ease-in-out infinite alternate; }
+@keyframes imn-breathe { from { opacity: .35; } to { opacity: 1; } }
+.imn-bar-status { color: var(--ink); font-size: 14px; font-weight: 650; line-height: 1.45; }
+.imn-bar-row { gap: 9px; }
+.imn-bar-row > .imn-download { order: -2; }
+.imn-bar-row > .imn-batch-open { order: -1; }
+.imn-bar-row > .imn-spacer { flex: 1 0 10px; }
+.imn-bar-row > .imn-refresh, .imn-bar-row > .imn-tools { margin-left: 0; }
+.imn-tools { position: relative; }
+.imn-tools > summary { display: flex; align-items: center; min-height: 44px; border-radius: 8px; padding: 0 10px; cursor: pointer; color: var(--primary); font-weight: 700; }
+.imn-tools[open] > summary { background: var(--infobg); }
+.imn-tools-content { padding: 10px 0; }
+.imn-radar-footnote { margin: 14px 0 0; font-size: 13px; color: var(--muted); }
+.imn-badge { min-width: 72px; padding: 3px 10px; font-size: 12px; vertical-align: middle; }
+.imn-badge-loading { border: 1px solid var(--border); }
+@media (max-width: 680px) {
+  .imn-radar-head { gap: 10px; }
+  .imn-brand-mark { width: 38px; height: 38px; }
+  .imn-bar-row > .imn-download { width: 100%; }
+  .imn-bar-row > .imn-batch-open { flex: 1; }
+  .imn-radar-workspace { margin-top: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .imn-bar[aria-busy="true"] .imn-status-indicator { animation: none; } }
