@@ -1,21 +1,26 @@
-# Modules — extensões modulares para o Moodle
+# Modules — plataforma modular para o Moodle
 
-**Modules** é uma única extensão Chrome que gerencia módulos baixados individualmente do GitHub, sem instalar outra extensão para cada funcionalidade.
+**Modules** é uma única extensão Chrome que reúne Corrections e Dates em um menu radial no canto inferior direito das páginas Moodle.
 
-- Mestre: `apps/modules/`
-- Catálogo de módulos: `registry/catalog-v3.json`
-- Fontes versionadas: `registry/packages/`
-- Contrato de integração: `packages/module-sdk/CONTRACT.md`
-- Plano: [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md)
+## Versão de compatibilidade 0.4.0
 
-## Interface
+As funcionalidades completas das versões **Corrections 1.7.8** e **Dates 1.3.8** foram incorporadas à extensão mestre e continuam separadamente ativáveis.
 
-As ações aparecem no menu radial do canto inferior direito. Cada botão que necessita de conteúdo **se transforma visualmente num modal**, sem abrir telas separadas. O catálogo mostra somente nome, versão e botões **Instalar / Atualizar / Ativar / Desativar / Remover**.
+- **Corrections:** buscar atividades pendentes por curso/categoria, baixar envios, importar notas CSV/XLSX e importar notas na tela de avaliação.
+- **Dates:** painel completo com tabela, cronograma, preenchimento e gravação de datas com conferência no Moodle.
+- **Modules:** modal compacto com nome/versão e ícones de instalar, atualizar e remover. Ações indisponíveis ficam cinza. Os painéis operacionais abrem como modais animados.
 
-## Testar
+**Limitação:** nesta versão os motores completos são empacotados junto ao Modules; ainda não são baixados do GitHub como código executável independente. Esse passo exige separar serviços privilegiados e runtime de cada módulo de forma segura.
 
-Carregue `apps/modules` em `chrome://extensions` com Modo do desenvolvedor, habilite **Permitir scripts do usuário** nos Detalhes do Modules e abra o Moodle FIEG/SENAI. Abra o catálogo pelo radial ou pelo ícone da barra do Chrome.
+### Instalar
 
-As fontes atuais de Corrections e Dates oferecem navegação básica por cursos e atividades. A migração das operações completas de importação de notas e ajuste em lote **ainda está pendente**; consulte [issue #4](https://github.com/Julioall/extensions/issues/4).
+Baixe o artefato `Modules-0.4.0` na execução do GitHub Actions deste branch/PR, extraia o ZIP e carregue a pasta em `chrome://extensions` → **Modo do desenvolvedor** → **Carregar sem compactação**. Deixe desativadas as extensões antigas para evitar execução em duplicidade.
 
-**Desenvolvimento em PR:** [Modules — plataforma](https://github.com/Julioall/extensions/pull/7) e [padrão visual](https://github.com/Julioall/extensions/issues/9).
+### Desenvolvimento
+
+- [Plano](docs/IMPLEMENTATION_PLAN.md) · [Épico #1](https://github.com/Julioall/extensions/issues/1)
+- [Migração completa #11](https://github.com/Julioall/extensions/issues/11)
+- [Código da extensão](apps/modules/)
+- Testes locais: `cd apps/modules && npm test`
+
+Os testes automatizados protegem a preservação dos arquivos legados e o isolamento entre módulos. Testes finais em sessão real do Moodle permanecem necessários.
