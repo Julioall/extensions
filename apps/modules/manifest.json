@@ -1,0 +1,38 @@
+{
+  "manifest_version": 3,
+  "name": "Modules — Moodle",
+  "short_name": "Modules",
+  "version": "0.1.0",
+  "description": "Gerenciador de módulos Moodle: Corrections, Dates e catálogo de atualizações independentes.",
+  "minimum_chrome_version": "114",
+  "permissions": [
+    "storage",
+    "downloads"
+  ],
+  "host_permissions": [
+    "https://raw.githubusercontent.com/*",
+    "https://github.com/*",
+    "https://ead.fieg.com.br/*",
+    "https://ead.senai.br/*"
+  ],
+  "action": {
+    "default_title": "Modules — Gerenciar módulos",
+    "default_popup": "manager.html"
+  },
+  "options_page": "manager.html",
+  "content_scripts": [
+    {
+      "matches": [
+        "https://ead.fieg.com.br/*",
+        "https://ead.senai.br/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "radial.css"
+      ],
+      "run_at": "document_start"
+    }
+  ]
+}
