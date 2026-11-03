@@ -13,8 +13,13 @@ jobs:
           node-version: "22"
       - name: Syntax check (Modules host)
         run: |
-          node --check apps/modules/content.js
-          node --check apps/modules/manager.js
+          node --check apps/modules/content-v2.js
+          node --check apps/modules/background-v2.js
+          node --check apps/modules/manager-v2.js
+          node --check apps/modules/catalog-v2-lib.js
+          node --check registry/packages/corrections-0.2.0.js
+          node --check registry/packages/dates-0.2.0.js
+          node --check apps/modules/manager-v2.js
           node --check apps/modules/catalog-lib.js
       - name: Unit tests
         working-directory: apps/modules
@@ -25,9 +30,9 @@ jobs:
       - name: Build Modules installable ZIP
         run: |
           cd apps/modules
-          zip -q -r ../../modules-master-0.1.0.zip . -x "tests/*"
+          zip -q -r ../../modules-master-0.2.0.zip . -x "tests/*"
       - uses: actions/upload-artifact@v4
         with:
-          name: modules-master-0.1.0
+          name: modules-master-0.2.0
           path: modules-master-0.1.0.zip
           if-no-files-found: error
