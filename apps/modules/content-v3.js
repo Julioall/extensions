@@ -20,7 +20,7 @@
     return 'other';
   };
   let installed={}, root, radial, toggle, overlay, originButton, oldFocus;
-  let radialOpen=false, closing=false;
+  let radialOpen=false, closing=false, priorMenuState=false;
   const request=async (action,extra={}) => {
     const answer=await chrome.runtime.sendMessage({source:'mrm-host',action,...extra});
     if (!answer?.ok) throw Error(answer?.error||'Operação não concluída');
@@ -98,7 +98,7 @@
     if(overlay)removeDialog(false);
     oldFocus=document.activeElement;
     originButton=button&&button.isConnected?button:toggle;
-    closeRadial(false);
+    priorMenuState=radialOpen;
     overlay=node('div',undefined,'mrm-overlay');
     const dialog=node('section',undefined,'mrm-dialog');
     dialog.setAttribute('role','dialog');
@@ -131,7 +131,7 @@
     if(!overlay)return;
     overlay.remove();overlay=null;closing=false;
     if(restore&&root?.isConnected){
-      closeRadial(true);
+      closeRadial(priorMenuState);
       const focus=originButton?.isConnected?originButton:toggle;
       focus.focus();
     }else if(oldFocus?.isConnected)oldFocus.focus();
