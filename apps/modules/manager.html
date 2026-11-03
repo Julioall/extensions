@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Modules — Moodle</title><link rel="stylesheet" href="manager.css"></head>
+<body>
+<header><div class="brand"><span class="symbol" aria-hidden="true">▦</span><div><h1>Modules</h1><small>Gerenciador Moodle</small></div></div>
+<button id="refresh" type="button" title="Consultar GitHub novamente">Atualizar catálogo</button></header>
+<main>
+<p id="source" role="status" aria-live="polite">Consultando catálogo…</p>
+<div id="modules" aria-live="polite"></div>
+<section class="help">
+<h2>Como funcionam as atualizações</h2>
+<p>Corrections e Dates são extensões independentes. Downloads são ZIPs para instalação manual no Chrome; o Modules não executa código remoto nem instala extensões automaticamente.</p>
+<p>O controle “Mostrar atalhos” afeta somente o menu Modules. Não desativa a extensão instalada.</p>
+<p><a href="https://github.com/Julioall/extensions" target="_blank" rel="noreferrer">Ver repositório no GitHub</a></p>
+</section></main>
+<script type="module" src="manager.js"></script>
+</body></html>
