@@ -116,6 +116,7 @@ chrome.runtime.onMessage.addListener((m,sender,reply)=>{
   if(sender.id!==chrome.runtime.id||!m||m.source!=='mrm-host')return;
   (async()=>{
     if(m.action==='state')return {installed:await getState(),available:(await api().then(()=>true).catch(()=>false))};
+    if(m.action==='openManager'){await chrome.runtime.openOptionsPage();return {opened:true};}
     if(m.action==='install')return install(m.descriptor);
     if(m.action==='toggle')return toggle(m.id,m.enabled);
     if(m.action==='remove')return remove(m.id);
