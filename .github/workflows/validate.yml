@@ -4,29 +4,29 @@ on:
   push:
     branches: [main, "feat/**"]
 jobs:
-  test-host:
+  verify-and-package:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
-      - name: Syntax check
+      - name: JavaScript syntax check
         run: |
-          node --check apps/modules/content-v3.js
-          node --check apps/modules/background-v3.js
-          node --check apps/modules/catalog-v3-lib.js
-          node --check registry/packages/corrections-0.3.0.js
-          node --check registry/packages/dates-0.3.0.js
-      - name: Tests
+          node --check apps/modules/content-v4.js
+          node --check apps/modules/background-v4.js
+          find apps/modules/legacy -name '*.js' -print0 | xargs -0 -n1 node --check
+      - name: Compatibility and isolation tests
         working-directory: apps/modules
         run: npm test
-      - name: Build minimal extension ZIP
+      - name: Build installable master
         run: |
           cd apps/modules
-          zip -q -r ../../Modules-0.3.0.zip manifest.json background-v3.js content-v3.js modal-v3.css catalog-v3-lib.js catalog-v3.json icons README.md
+          zip -q -r ../../Modules-0.4.0.zip manifest.json content-v4.js background-v4.js modal-v4.css catalog-v4.json README.md icons legacy
+          cd ../..
+          unzip -t Modules-0.4.0.zip | tail -2
       - uses: actions/upload-artifact@v4
         with:
-          name: Modules-0.3.0
-          path: Modules-0.3.0.zip
+          name: Modules-0.4.0
+          path: Modules-0.4.0.zip
           if-no-files-found: error
