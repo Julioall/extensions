@@ -1,0 +1,24 @@
+name: Validate Modules
+on:
+  pull_request:
+  push:
+    branches: [main, "feat/**"]
+jobs:
+  test-host:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Syntax check (Modules host)
+        run: |
+          node --check apps/modules/content.js
+          node --check apps/modules/manager.js
+          node --check apps/modules/catalog-lib.js
+      - name: Unit tests
+        working-directory: apps/modules
+        run: npm test
+      - name: Verify module manifests
+        run: |
+          node -e "for (const id of ['corrections','dates']) {const x=require('./modules/'+id+'/module.json'); if(x.id !== id || x.schemaVersion !== 1) process.exit(1)}"
