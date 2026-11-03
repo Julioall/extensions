@@ -1,0 +1,40 @@
+/* Single radial host. Keep exactly four actions at 89px to prevent overlap. */
+#moodle-tools-radial {
+  --mrm-primary:var(--bs-primary,#0f6cbf);
+  --mrm-ink:var(--bs-body-color,#212529);
+  --mrm-surface:var(--bs-body-bg,#fff);
+  --mrm-border:var(--bs-border-color,#dee2e6);
+  --mrm-hover:var(--bs-tertiary-bg,#f8f9fa);
+  position:fixed!important;
+  bottom:max(24px,env(safe-area-inset-bottom,0px))!important;
+  right:max(24px,env(safe-area-inset-right,0px))!important;
+  width:56px;height:56px;z-index:2147481000!important;
+  isolation:isolate;pointer-events:none;
+  font:500 13px/1.3 system-ui,-apple-system,"Segoe UI",sans-serif;
+  color:var(--mrm-ink);
+}
+#moodle-tools-radial *{box-sizing:border-box}
+#moodle-tools-radial button{
+  appearance:none;position:absolute;display:flex;align-items:center;justify-content:center;
+  padding:0;margin:0;border:1px solid var(--mrm-border);
+  border-radius:50%;background:var(--mrm-surface);color:var(--mrm-ink);
+  box-shadow:0 5px 18px rgba(0,0,0,.14);
+  cursor:pointer;pointer-events:auto;line-height:1;
+}
+#moodle-tools-radial button svg{width:21px;height:21px;display:block;flex:none}
+#moodle-tools-radial button:focus-visible{outline:3px solid var(--mrm-primary);outline-offset:3px}
+#moodle-tools-radial .mrm-toggle{right:0;bottom:0;width:56px;height:56px;z-index:2;background:var(--mrm-primary);border-color:var(--mrm-primary);color:white}
+#moodle-tools-radial .mrm-toggle svg{width:26px;height:26px;transition:transform .25s ease}
+#moodle-tools-radial.is-open .mrm-toggle svg{transform:rotate(45deg)}
+#moodle-tools-radial .mrm-items{position:absolute;inset:0;pointer-events:none}
+#moodle-tools-radial .mrm-action{width:46px;height:46px;right:5px;bottom:5px;transform:translate(0,0) scale(.5);opacity:0;visibility:hidden;pointer-events:none;transition:transform .28s cubic-bezier(.22,1,.36,1),opacity .18s ease,visibility .28s}
+#moodle-tools-radial.is-open .mrm-action{transform:translate(var(--mrm-x),var(--mrm-y));opacity:1;visibility:visible;pointer-events:auto;transition-delay:var(--mrm-delay)}
+#moodle-tools-radial .mrm-action:hover:not(:disabled){background:var(--mrm-hover);border-color:var(--mrm-primary)}
+#moodle-tools-radial .mrm-action:disabled{background:#e7e9ec!important;color:#939ba3!important;border-color:#d2d6db!important;box-shadow:none!important;opacity:.62;cursor:not-allowed;filter:grayscale(1)}
+#moodle-tools-radial .mrm-tip{position:absolute;top:50%;right:calc(100% + 9px);transform:translate(4px,-50%);border:1px solid var(--mrm-border);border-radius:6px;padding:6px 9px;white-space:nowrap;background:var(--mrm-surface);color:var(--mrm-ink);pointer-events:none;opacity:0;visibility:hidden;box-shadow:0 4px 10px rgba(0,0,0,.1);transition:opacity .12s,transform .12s}
+#moodle-tools-radial.is-open .mrm-action:is(:hover,:focus-visible) .mrm-tip{opacity:1;visibility:visible;transform:translate(0,-50%)}
+[data-bs-theme="dark"] #moodle-tools-radial{--mrm-primary:var(--bs-link-color,#6ea8fe)}
+[data-bs-theme="dark"] #moodle-tools-radial .mrm-action:disabled{background:#343940!important;color:#9299a1!important;border-color:#505762!important}
+@media(max-width:600px){#moodle-tools-radial{right:18px!important;bottom:18px!important}}
+@media(prefers-reduced-motion:reduce){#moodle-tools-radial button,#moodle-tools-radial svg{transition:none!important}}
+@media print{#moodle-tools-radial{display:none!important}}

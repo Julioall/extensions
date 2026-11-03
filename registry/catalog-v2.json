@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 2,
+  "repository": "Julioall/extensions",
+  "channel": "experimental",
+  "modules": [
+    {
+      "id": "corrections",
+      "name": "Corrections",
+      "description": "Protótipo: diagnóstico da página do Moodle, somente leitura (sem importação de notas).",
+      "version": "0.2.0",
+      "kind": "userScript",
+      "icon": "file-check",
+      "routes": [
+        "course",
+        "category",
+        "grading"
+      ],
+      "scriptUrl": "https://raw.githubusercontent.com/Julioall/extensions/1f6855677400b7b31889583f383cdc52b7230f32/registry/packages/corrections-0.2.0.js",
+      "sha256": "0fe1e266f0037aadaf82c9b2c3988abffa7a8bae342d8d795b045039e7836d4b",
+      "maxBytes": 65536,
+      "capabilities": [
+        "read-dom"
+      ],
+      "experimental": true
+    },
+    {
+      "id": "dates",
+      "name": "Dates",
+      "description": "Protótipo: identificação das atividades e links para edição manual (sem alteração automática).",
+      "version": "0.2.0",
+      "kind": "userScript",
+      "icon": "calendar-days",
+      "routes": [
+        "course"
+      ],
+      "scriptUrl": "https://raw.githubusercontent.com/Julioall/extensions/a5da648eb9a5371923e3ef36e7e24653ba608126/registry/packages/dates-0.2.0.js",
+      "sha256": "c85e4b0f152ad60142093baed0b9b1b4db24a7649b442d7552c9e03f9774136f",
+      "maxBytes": 65536,
+      "capabilities": [
+        "read-dom"
+      ],
+      "experimental": true
+    }
+  ]
+}

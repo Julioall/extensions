@@ -1,0 +1,38 @@
+name: Validate Modules
+on:
+  pull_request:
+  push:
+    branches: [main, "feat/**"]
+jobs:
+  test-host:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Syntax check (Modules host)
+        run: |
+          node --check apps/modules/content-v2.js
+          node --check apps/modules/background-v2.js
+          node --check apps/modules/manager-v2.js
+          node --check apps/modules/catalog-v2-lib.js
+          node --check registry/packages/corrections-0.2.0.js
+          node --check registry/packages/dates-0.2.0.js
+          node --check apps/modules/manager-v2.js
+          node --check apps/modules/catalog-lib.js
+      - name: Unit tests
+        working-directory: apps/modules
+        run: npm test
+      - name: Verify module manifests
+        run: |
+          node -e "for (const id of ['corrections','dates']) {const x=require('./modules/'+id+'/module.json'); if(x.id !== id || x.schemaVersion !== 1) process.exit(1)}"
+      - name: Build Modules installable ZIP
+        run: |
+          cd apps/modules
+          zip -q -r ../../modules-master-0.2.0.zip manifest.json background-v2.js content-v2.js radial.css manager.html manager.css manager-v2.js catalog-v2-lib.js catalog-v2.json icons README.md package.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: modules-master-0.2.0
+          path: modules-master-0.2.0.zip
+          if-no-files-found: error
