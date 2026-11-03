@@ -16,7 +16,7 @@
         "grading"
       ],
       "scriptUrl": "https://raw.githubusercontent.com/Julioall/extensions/feat/modules-platform-foundation/registry/packages/corrections-0.2.0.js",
-      "sha256": "7011eeef18516da4c6bd2857c773c90290ecfe5ea6b89e951070cacc205e7065",
+      "sha256": "0fe1e266f0037aadaf82c9b2c3988abffa7a8bae342d8d795b045039e7836d4b",
       "maxBytes": 65536,
       "capabilities": [
         "read-dom"
@@ -34,7 +34,7 @@
         "course"
       ],
       "scriptUrl": "https://raw.githubusercontent.com/Julioall/extensions/feat/modules-platform-foundation/registry/packages/dates-0.2.0.js",
-      "sha256": "04fc764859263e2b5314cc941a591d8d52ba8050db8fe1cdb6edc7b8efb076ad",
+      "sha256": "c85e4b0f152ad60142093baed0b9b1b4db24a7649b442d7552c9e03f9774136f",
       "maxBytes": 65536,
       "capabilities": [
         "read-dom"
