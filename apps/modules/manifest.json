@@ -2,16 +2,16 @@
   "manifest_version": 3,
   "name": "Modules — Moodle",
   "short_name": "Modules",
-  "version": "0.1.0",
-  "description": "Gerenciador de módulos Moodle: Corrections, Dates e catálogo de atualizações independentes.",
-  "minimum_chrome_version": "114",
+  "version": "0.2.0",
+  "description": "Modules: catálogo instalável de componentes Moodle via User Scripts; menu radial dinâmico.",
+  "minimum_chrome_version": "138",
   "permissions": [
     "storage",
-    "downloads"
+    "tabs",
+    "userScripts"
   ],
   "host_permissions": [
     "https://raw.githubusercontent.com/*",
-    "https://github.com/*",
     "https://ead.fieg.com.br/*",
     "https://ead.senai.br/*"
   ],
@@ -27,17 +27,21 @@
         "https://ead.senai.br/*"
       ],
       "js": [
-        "content.js"
+        "content-v2.js"
       ],
       "css": [
         "radial.css"
       ],
-      "run_at": "document_start"
+      "run_at": "document_idle"
     }
   ],
   "icons": {
     "16": "icons/16.png",
     "48": "icons/48.png",
     "128": "icons/128.png"
+  },
+  "background": {
+    "service_worker": "background-v2.js",
+    "type": "module"
   }
 }
