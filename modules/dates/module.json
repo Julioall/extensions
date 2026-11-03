@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "dates",
+  "name": "Dates",
+  "version": "1.3.8",
+  "kind": "extension",
+  "minimumHostVersion": "0.1.0",
+  "compatibleHosts": [
+    "ead.fieg.com.br",
+    "ead.senai.br"
+  ],
+  "capabilities": [
+    "read-activity-dates",
+    "edit-activity-dates"
+  ],
+  "routes": [
+    "/course/view.php",
+    "/course/modedit.php"
+  ],
+  "runtime": "independent-mv3",
+  "sourceMigration": "pending"
+}
