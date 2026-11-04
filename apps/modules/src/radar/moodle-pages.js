@@ -119,8 +119,11 @@
       if (link.closest('nav, .breadcrumb, .navbar, .primary-navigation, .secondary-navigation, .pagination')) continue;
       const courseId = courseIdFromHref(link.getAttribute('href'), baseUrl);
       if (!courseId || found.has(courseId)) continue;
-      const name = cleanName(link, `Curso ${courseId}`);
-      found.set(courseId, { courseId, name, href: new URL(link.getAttribute('href'), baseUrl).href, link });
+      const card = link.closest('.dashboard-card, [data-region="course-content"], .coursebox, .course-card, li.course');
+      const visibleTitle = card?.querySelector('a.coursename[href*="/course/view.php"], .coursename a[href*="/course/view.php"], .course-title a[href*="/course/view.php"]');
+      const titleLink = visibleTitle || link;
+      const name = cleanName(titleLink, `Curso ${courseId}`);
+      found.set(courseId, { courseId, name, href: new URL(link.getAttribute('href'), baseUrl).href, link: titleLink });
       if (found.size >= MAX_COURSES_PER_CATEGORY) break;
     }
     return [...found.values()];
@@ -130,17 +133,21 @@
   // nem seguir links externos. Respeita o conjunto de páginas que o Moodle exibe.
   function collectCategoryPages(doc, baseUrl) {
     const base = new URL(baseUrl);
+    const isCategory = base.pathname === '/course/index.php';
+    const isSearch = base.pathname === '/course/search.php';
     const categoryId = base.searchParams.get('categoryid');
-    if (!/^[1-9]\d*$/.test(categoryId || '')) return [];
+    if (!isSearch && (!isCategory || !/^[1-9]\d*$/.test(categoryId || ''))) return [];
     const links = new Set();
     for (const link of doc.querySelectorAll('.pagination a[href], .paging a[href], a[rel="next"][href]')) {
       try {
         const next = new URL(link.getAttribute('href'), base);
         const page = next.searchParams.get('page');
         if (next.origin !== base.origin || next.pathname !== base.pathname ||
-            next.searchParams.get('categoryid') !== categoryId ||
             !/^\d+$/.test(page || '') || Number(page) > 10000) continue;
-        // Preserva os parâmetros de navegação necessários ao tema, mas ignora fragmentos.
+        if (isCategory && next.searchParams.get('categoryid') !== categoryId) continue;
+        if (isSearch &&
+            (next.searchParams.get('search') || next.searchParams.get('q') || '') !==
+            (base.searchParams.get('search') || base.searchParams.get('q') || '')) continue;
         next.hash = '';
         links.add(next.href);
       } catch (_) { /* link inválido */ }
