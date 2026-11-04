@@ -35,7 +35,7 @@
           ({ doc } = await fetchDoc(assignment.href));
           info = pages.parsePendingInfo(doc);
         }
-        if (info.kind === 'unknown') throw makeError('Campo "Precisa de avaliação" não encontrado nesta atividade.', 'PARSE', { noRetry: true });
+        if (info.kind === 'unknown') throw makeError('Resumo da avaliação não confirmou pendências; tarefa encontrada, mas não verificada.', 'PARSE', { noRetry: true });
         return info.kind === 'na' ? null : info.count;
       }).then(count => { cache.set(id, count === null ? NA : count); return count; })
         .finally(() => inflight.delete(id));
