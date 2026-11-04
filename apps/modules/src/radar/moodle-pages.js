@@ -11,7 +11,7 @@
   const PENDING_LABELS = new Set([
     'precisa de avaliacao', 'precisam de avaliacao', 'precisa ser avaliada',
     'precisam ser avaliados', 'necessita avaliacao', 'necessitam de avaliacao',
-    'necessita de avaliacao', 'pendentes de avaliacao', 'pendente de avaliacao',
+    'necessita de avaliacao', 'pendentes de avaliacao', 'pendente de avaliacao', 'requer avaliacao', 'requerem avaliacao',
     'aguardando avaliacao', 'a avaliar', 'por avaliar', 'para avaliar',
     'needs grading', 'requires grading', 'require grading', 'awaiting grading',
     'submissions requiring grading', 'ungraded submissions'
