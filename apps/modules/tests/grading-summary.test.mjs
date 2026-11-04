@@ -31,7 +31,7 @@ test('Projeto de Vida: assignments never become no evaluation from participants 
 test('explicit grading counts (including zero and variants) remain confirmed',()=>{
   for(const [label,value,count] of [
     ['Precisa de avaliação','2',2],['Precisam de avaliação','4',4],
-    ['Requer avaliação','7',null],['Envios aguardando avaliação','5',5],
+    ['Requer avaliação','7',7],['Envios aguardando avaliação','5',5],
     ['Requires grading','0',0],['Needs grading','1.234',1234]
   ]){
     const info=pages.parsePendingInfo(summary([['Participantes','30'],[label,value]]));
