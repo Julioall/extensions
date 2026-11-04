@@ -44,8 +44,8 @@
     }
 
     // onResult(assignment, { state: 'ok'|'error'|'cancelled', count?, message? }) é chamado a cada atividade.
-    async function scanAssignments(assignments, onResult = () => {}, { force = false } = {}) {
-      const results = await Promise.all(assignments.map(async assignment => {
+    async function scanAssignments(assignments, onResult = () => {}, { force = false, maxInflight = Infinity } = {}) {
+      const checkOne = async assignment => {
         let result;
         try {
           const count = await pendingCount(assignment, { force });
@@ -55,11 +55,27 @@
         }
         onResult(assignment, result);
         return { assignment, ...result };
-      }));
+      };
+      let results;
+      if (Number.isFinite(maxInflight) && maxInflight >= 1) {
+        // Demand-driven: do not enqueue every activity of every course.
+        results = new Array(assignments.length);
+        let cursor = 0;
+        const worker = async () => {
+          for (;;) {
+            const index = cursor++;
+            if (index >= assignments.length) return;
+            results[index] = await checkOne(assignments[index]);
+          }
+        };
+        await Promise.all(Array.from({ length: Math.min(maxInflight, assignments.length) }, () => worker()));
+      } else {
+        results = await Promise.all(assignments.map(checkOne));
+      }
       return { results, summary: summarize(results) };
     }
 
-    async function scanCourse(course, onResult, { force = false, onAssignments = () => {} } = {}) {
+    async function scanCourse(course, onResult, { force = false, maxInflight = Infinity, onAssignments = () => {} } = {}) {
       const { doc, finalUrl } = await governor.run(async () => { spend(); return fetchDoc(course.href); });
       const discovered = pages.collectAssignments(doc, finalUrl);
       // Mesmo verificador usado na página do curso. Ao buscar pela categoria, a
@@ -71,7 +87,7 @@
         { restrictSection: false, includeUndated: true, includeIndexUndated: true });
       const assignments = selection.active;
       onAssignments(assignments);
-      const scan = await scanAssignments(assignments, onResult, { force });
+      const scan = await scanAssignments(assignments, onResult, { force, maxInflight });
       return { course, assignments, excludedAssignments: selection.excluded, ...scan };
     }
 
