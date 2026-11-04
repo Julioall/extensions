@@ -1,4 +1,4 @@
-# Modules v0.5.1 — Corrections com busca controlada
+# Modules v0.5.2 — Corrections com busca controlada
 
 Esta versão instala **somente o Modules** como extensão do Chrome. O catálogo aparece exclusivamente ao clicar no ícone da extensão na barra do navegador. Ele apresenta somente nome, versão e três botões de ícone (instalar, atualizar, remover). Não há atalho Modules no menu radial do Moodle.
 
@@ -35,3 +35,7 @@ A construção compara hashes SHA-256 dos scripts e estilos que não foram modif
 - Limite de **2 consultas HTTP simultâneas**, inicialmente 1, com intervalo mínimo de **450ms** entre inícios e recuo em falhas transitórias.
 - Qualquer falha na consulta aparece como `Não verificado` e não como zero.
 - Nenhuma alteração no Dates ou nas telas de notas e importação.
+
+## Correção de classificação de avaliações
+
+O Corrections não trata a presença de participantes, sem um contador explícito de pendências, como prova de que o curso não tem avaliações. Quando houver tarefas, mas o Moodle não apresentar contador verificável, mostra **Não verificado** e preserva a informação sobre tarefas encontradas. Suporta variantes de rótulos de avaliação do Moodle. Mantém busca por categoria com até 2 cursos simultâneos e 1 atividade por curso. Os arquivos do Dates não foram alterados.
