@@ -39,3 +39,7 @@ A construção compara hashes SHA-256 dos scripts e estilos que não foram modif
 ## Correção de classificação de avaliações
 
 O Corrections não trata a presença de participantes, sem um contador explícito de pendências, como prova de que o curso não tem avaliações. Quando houver tarefas, mas o Moodle não apresentar contador verificável, mostra **Não verificado** e preserva a informação sobre tarefas encontradas. Suporta variantes de rótulos de avaliação do Moodle. Mantém busca por categoria com até 2 cursos simultâneos e 1 atividade por curso. Os arquivos do Dates não foram alterados.
+
+## v0.5.3 — Abas OneTopic
+
+A busca manual por categoria detecta os links de **Postagem das Superações**, **Situações de Aprendizagem**, **Avaliação** ou seções com tarefas no índice. Consulta o HTML da seção correspondente no Moodle sem abrir janelas e sem fixar números (section=4, section=5 ou outros), antes de verificar as tarefas. Mantém no máximo dois cursos simultâneos e uma atividade por curso. Se a seção falhar, informa “Não verificado”. Código e telas originais de Dates, importação e downloads não foram modificados.
