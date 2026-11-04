@@ -2,7 +2,7 @@ name: Validate original Moodle modules
 on:
   pull_request:
   push:
-    branches: [main, "feat/**"]
+    branches: [main, "feat/**", "fix/**"]
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -17,13 +17,13 @@ jobs:
           node --check apps/modules/popup.js
           node --check apps/modules/radial.js
       - name: Verify original source integrity, routes and catalog
-        run: node --test apps/modules/tests/compatibility.test.mjs
+        run: node --test apps/modules/tests/*.test.mjs
       - name: Build installable extension
         run: |
           cd apps/modules
-          zip -q -r ../../Modules-v0.5.0.zip . -x 'tests/*' 'compat-integrity.json'
+          zip -q -r ../../Modules-v0.5.2.zip . -x 'tests/*' 'compat-integrity.json'
       - uses: actions/upload-artifact@v4
         with:
-          name: Modules-v0.5.0
-          path: Modules-v0.5.0.zip
+          name: Modules-v0.5.2
+          path: Modules-v0.5.2.zip
           if-no-files-found: error

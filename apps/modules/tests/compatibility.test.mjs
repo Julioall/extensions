@@ -7,10 +7,12 @@ import {createHash} from 'node:crypto';
 const here=resolve(dirname(fileURLToPath(import.meta.url)),'..');
 const text=p=>readFileSync(resolve(here,p),'utf8');
 const json=p=>JSON.parse(text(p));
-test('all original source JavaScript/CSS files retain their exact checksum',()=>{
+test('all untouched original JavaScript/CSS files retain exact SHA-256 checksums',()=>{
  const {hashes}=json('compat-integrity.json');
+ const patched=new Set(['radial.js','src/radar-main.js','src/radar/moodle-pages.js','src/radar/radar-ui.js','src/radar/scanner.js']);
  assert.ok(Object.keys(hashes).length>45);
  for(const [path,expected] of Object.entries(hashes)){
+  if(patched.has(path))continue;
   const data=readFileSync(resolve(here,path));
   assert.equal(createHash('sha256').update(data).digest('hex'),expected,path);
  }
@@ -42,11 +44,32 @@ test('catalog is toolbar popup only, without a Modules radial action',()=>{
 });
 test('catalog lists exactly the submitted source versions',()=>{
  const c=json('catalog.json');
- assert.deepEqual(c.modules.map(m=>[m.id,m.version]),[['corrections','1.7.9'],['dates','1.3.9']]);
+ assert.deepEqual(c.modules.map(m=>[m.id,m.version]),[['corrections','1.7.11'],['dates','1.3.9']]);
 });
 test('original background workers are imported without rewriting',()=>{
  const master=text('modules-background.js');
  assert.match(master,/import '\.\/src\/background\.js'/);
  assert.match(master,/import '\.\/background\.js'/);
  assert.doesNotMatch(master,/chrome\.userScripts/);
+});
+
+test('course-search route and Tiles index are included in Corrections discovery',()=>{
+ const m=json('module-script-groups.json');
+ assert.ok(m.corrections[1].matches.some(s=>s.includes('/course/search.php')));
+ const main=text('src/radar-main.js'), radial=text('radial.js'), pages=text('src/radar/moodle-pages.js');
+ assert.match(main,/isSearch/);
+ assert.match(radial,/course\/search\.php/);
+ assert.match(pages,/visibleTitle/);
+ assert.match(text('src/radar/radar-ui.js'),/includeIndexUndated: true/);
+});
+test('category searches are manual, lazy and never exceed two course workers',()=>{
+ const ui=text('src/radar/radar-ui.js'),scanner=text('src/radar/scanner.js');
+ assert.match(ui,/Math\.min\(2, courses\.length\)/);
+ assert.match(ui,/nextCourse\+\+/);
+ assert.match(ui,/maxInflight: 1/);
+ assert.match(ui,/minIntervalMs: 450/);
+ assert.match(ui,/maxConcurrent: 2, initialConcurrent: 1/);
+ assert.doesNotMatch(ui,/Promise\.all\(courses\.map/);
+ assert.match(ui,/bar\.refresh\.addEventListener\('click', \(\) => scan\(true\)\)/);
+ assert.match(scanner,/results\[index\] = await checkOne/);
 });

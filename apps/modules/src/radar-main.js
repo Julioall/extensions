@@ -5,7 +5,9 @@
   const url = new URL(location.href);
   const isCourse = /\/course\/view\.php$/.test(url.pathname);
   const isCategory = /\/course\/index\.php$/.test(url.pathname) && url.searchParams.has('categoryid');
-  if (!isCourse && !isCategory) return;
+  // Moodle Moove shows course search results at /course/search.php.
+  const isSearch = /\/course\/search\.php$/.test(url.pathname);
+  if (!isCourse && !isCategory && !isSearch) return;
 
   function start(attempt) {
     const deps = IMN.radar.createDeps(window);

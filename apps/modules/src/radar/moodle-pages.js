@@ -6,41 +6,43 @@
   const MAX_ASSIGNMENTS_PER_COURSE = 120;
   const MAX_COURSES_PER_CATEGORY = 120; // limite por busca, incluindo paginação
 
-  const PENDING_LABELS = ['precisa de avaliacao', 'necessita avaliacao', 'needs grading', 'requires grading'];
+  // Os rótulos do resumo variam entre versões/idiomas do Moodle.
+  // Só um contador explícito confirma quantos envios aguardam correção.
+  const PENDING_LABELS = new Set([
+    'precisa de avaliacao', 'precisam de avaliacao', 'precisa ser avaliada',
+    'precisam ser avaliados', 'necessita avaliacao', 'necessitam de avaliacao',
+    'necessita de avaliacao', 'pendentes de avaliacao', 'pendente de avaliacao', 'requer avaliacao', 'requerem avaliacao',
+    'aguardando avaliacao', 'a avaliar', 'por avaliar', 'para avaliar',
+    'needs grading', 'requires grading', 'require grading', 'awaiting grading',
+    'submissions requiring grading', 'ungraded submissions'
+  ]);
+  const isPendingLabel = label => PENDING_LABELS.has(label) ||
+    /^(?:precis(?:a|am) (?:de |ser )?avaliad?[aos]*|necessit(?:a|am) (?:de |ser )?avaliad?[aos]*|envios? (?:pendentes?|aguardando) (?:de )?avaliacao|atividades? (?:pendentes?|aguardando) (?:de )?avaliacao|envios? para avaliar)$/.test(label);
+  const rowsOf = doc => doc.querySelectorAll('.gradingsummarytable tr, table.generaltable tr');
 
-  // Contagem "Precisa de avaliação" do resumo da atividade. null = campo não encontrado (nunca vira 0).
+  // null = rótulo ou número não reconhecido. Nunca converter ausência de
+  // informações do Moodle em 0 nem em "Sem avaliação".
   function parsePendingCount(doc) {
-    for (const row of doc.querySelectorAll('.gradingsummarytable tr, table.generaltable tr')) {
-      const heading = row.querySelector('th, td:first-child');
-      if (!PENDING_LABELS.includes(normalizeText(heading ? heading.textContent : ''))) continue;
-      const valueCell = row.querySelector('td:last-child');
-      const digits = ((valueCell && valueCell.textContent) || '').replace(/\s+/g, '').match(/\d+/);
-      return digits ? Number.parseInt(digits[0], 10) : null;
+    for (const row of rowsOf(doc)) {
+      const label = normalizeText(row.querySelector('th, td:first-child')?.textContent || '');
+      if (!isPendingLabel(label)) continue;
+      const cell = row.querySelector('td:last-child');
+      if (!cell) return null;
+      const value = (cell.textContent || '').trim();
+      const match = value.match(/\b\d{1,3}(?:[.,\s]\d{3})+\b|\b\d+\b/);
+      if (!match) return null;
+      const count = Number(match[0].replace(/[.,\s]/g, ''));
+      return Number.isSafeInteger(count) ? count : null;
     }
     return null;
   }
 
-  const PARTICIPANT_LABELS = ['participantes', 'participants'];
-  // Linha que fala de avaliação mas não é a de "Enviado para avaliação"/rascunho: se existir e não for reconhecida, é leitura incerta.
-  const looksLikeGradingRow = label => /avalia|grading|graded/.test(label) && !/^(enviad|submitt|rascunho|draft)/.test(label);
-
-  // Resumo da atividade: { kind: 'count', count } | { kind: 'na' } | { kind: 'unknown' }.
-  // 'na' = a tabela de resumo é reconhecida (tem "Participantes") e NÃO tem linha de avaliação (ex.: tarefa sem envio online).
-  // Qualquer dúvida (linha de avaliação com rótulo desconhecido, número ausente, sem tabela) é 'unknown' = Não verificado.
+  // 'count': o Moodle confirmou uma contagem; 'unknown': o resumo não permite
+  // verificar. A presença de "Participantes" sozinha NÃO prova que a tarefa
+  // não possua avaliações. Esse era o falso "Sem avaliação" em toda categoria.
   function parsePendingInfo(doc) {
-    let recognized = false;
-    let gradingLike = false;
-    for (const row of doc.querySelectorAll('.gradingsummarytable tr, table.generaltable tr')) {
-      const heading = row.querySelector('th, td:first-child');
-      const label = normalizeText(heading ? heading.textContent : '');
-      if (PENDING_LABELS.includes(label)) {
-        const count = parsePendingCount(doc);
-        return count === null ? { kind: 'unknown' } : { kind: 'count', count };
-      }
-      if (PARTICIPANT_LABELS.includes(label)) recognized = true;
-      if (looksLikeGradingRow(label)) gradingLike = true;
-    }
-    return recognized && !gradingLike ? { kind: 'na' } : { kind: 'unknown' };
+    const count = parsePendingCount(doc);
+    return count === null ? { kind: 'unknown' } : { kind: 'count', count };
   }
 
   function assignmentIdFromHref(href, base) {
@@ -119,8 +121,11 @@
       if (link.closest('nav, .breadcrumb, .navbar, .primary-navigation, .secondary-navigation, .pagination')) continue;
       const courseId = courseIdFromHref(link.getAttribute('href'), baseUrl);
       if (!courseId || found.has(courseId)) continue;
-      const name = cleanName(link, `Curso ${courseId}`);
-      found.set(courseId, { courseId, name, href: new URL(link.getAttribute('href'), baseUrl).href, link });
+      const card = link.closest('.dashboard-card, [data-region="course-content"], .coursebox, .course-card, li.course');
+      const visibleTitle = card?.querySelector('a.coursename[href*="/course/view.php"], .coursename a[href*="/course/view.php"], .course-title a[href*="/course/view.php"]');
+      const titleLink = visibleTitle || link;
+      const name = cleanName(titleLink, `Curso ${courseId}`);
+      found.set(courseId, { courseId, name, href: new URL(link.getAttribute('href'), baseUrl).href, link: titleLink });
       if (found.size >= MAX_COURSES_PER_CATEGORY) break;
     }
     return [...found.values()];
@@ -130,17 +135,21 @@
   // nem seguir links externos. Respeita o conjunto de páginas que o Moodle exibe.
   function collectCategoryPages(doc, baseUrl) {
     const base = new URL(baseUrl);
+    const isCategory = base.pathname === '/course/index.php';
+    const isSearch = base.pathname === '/course/search.php';
     const categoryId = base.searchParams.get('categoryid');
-    if (!/^[1-9]\d*$/.test(categoryId || '')) return [];
+    if (!isSearch && (!isCategory || !/^[1-9]\d*$/.test(categoryId || ''))) return [];
     const links = new Set();
     for (const link of doc.querySelectorAll('.pagination a[href], .paging a[href], a[rel="next"][href]')) {
       try {
         const next = new URL(link.getAttribute('href'), base);
         const page = next.searchParams.get('page');
         if (next.origin !== base.origin || next.pathname !== base.pathname ||
-            next.searchParams.get('categoryid') !== categoryId ||
             !/^\d+$/.test(page || '') || Number(page) > 10000) continue;
-        // Preserva os parâmetros de navegação necessários ao tema, mas ignora fragmentos.
+        if (isCategory && next.searchParams.get('categoryid') !== categoryId) continue;
+        if (isSearch &&
+            (next.searchParams.get('search') || next.searchParams.get('q') || '') !==
+            (base.searchParams.get('search') || base.searchParams.get('q') || '')) continue;
         next.hash = '';
         links.add(next.href);
       } catch (_) { /* link inválido */ }

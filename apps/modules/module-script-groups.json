@@ -42,7 +42,9 @@
         "https://ead.senai.br/course/view.php*",
         "https://ead.fieg.com.br/course/view.php*",
         "https://ead.senai.br/course/index.php*",
-        "https://ead.fieg.com.br/course/index.php*"
+        "https://ead.fieg.com.br/course/index.php*",
+        "https://ead.senai.br/course/search.php*",
+        "https://ead.fieg.com.br/course/search.php*"
       ],
       "js": [
         "src/core/namespace.js",
