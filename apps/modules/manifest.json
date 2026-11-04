@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Modules — Moodle",
   "short_name": "Modules",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "Gerencia Corrections e Dates, preservando seus scripts, telas e fluxos originais.",
   "minimum_chrome_version": "114",
   "permissions": [
