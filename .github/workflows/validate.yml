@@ -16,14 +16,14 @@ jobs:
           node --check apps/modules/modules-background.js
           node --check apps/modules/popup.js
           node --check apps/modules/radial.js
-      - name: Verify original source integrity, routes and catalog
+      - name: Verify module integrity, routes, OneTopic navigation and catalog
         run: node --test apps/modules/tests/*.test.mjs
       - name: Build installable extension
         run: |
           cd apps/modules
-          zip -q -r ../../Modules-v0.5.2.zip . -x 'tests/*' 'compat-integrity.json'
+          zip -q -r ../../Modules-v0.5.3.zip . -x 'tests/*' 'compat-integrity.json'
       - uses: actions/upload-artifact@v4
         with:
-          name: Modules-v0.5.2
-          path: Modules-v0.5.2.zip
+          name: Modules-v0.5.3
+          path: Modules-v0.5.3.zip
           if-no-files-found: error
