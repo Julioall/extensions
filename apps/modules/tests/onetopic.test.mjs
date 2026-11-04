@@ -6,7 +6,7 @@ import {fileURLToPath} from 'node:url';
 import vm from 'node:vm';
 
 const root=resolve(dirname(fileURLToPath(import.meta.url)),'..');
-function harness(courseId, sectionNo, label='Situações de Aprendizagem') {
+function harness(courseId, sectionNo, label='Situações de Aprendizagem', failSection=false) {
   const ctx={URL,Date,IMN:{
     text:{normalizeText:s=>String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim()},
     governor:{makeError:(s)=>new Error(s)},cache:{NA:-1},
@@ -42,6 +42,7 @@ function harness(courseId, sectionNo, label='Situações de Aprendizagem') {
     visited.push(uri);
     const parsed=new URL(uri);
     if(parsed.pathname==='/mod/assign/view.php')return {doc:{},finalUrl:uri};
+    if(failSection && parsed.searchParams.get('section')===String(sectionNo))throw new Error('Section temporarily unavailable');
     return {doc:parsed.searchParams.get('section')===String(sectionNo)?sectionDoc:baseDoc,finalUrl:uri};
   };
   const scanner=ctx.IMN.scanner.createScanner({
@@ -65,8 +66,11 @@ for(const [id,section] of [['33458',4],['33448',5],['33447',5]]) {
     assert.equal(h.visited.some(u=>u.includes('evil.example')),false);
   });
 }
-test('without section response the scanner returns partial instead of claiming no tasks',async()=>{
-  const h=harness('33458',4);
-  h.scanner=undefined;
-  assert.ok(h.tabs.length>=2);
+test('section failure returns unverified, not false no-tasks confirmation',async()=>{
+  const h=harness('33458',4,'Situações de Aprendizagem',true);
+  const result=await h.scanner.scanCourse(h.course,()=>{},{maxInflight:1});
+  assert.equal(result.sectionFailures,1);
+  assert.equal(result.summary.partial,true);
+  assert.equal(result.summary.unverified,1);
+  assert.equal(result.summary.assignmentCount,0);
 });
