@@ -113,6 +113,51 @@
     return root.IMN.materials ? root.IMN.materials.attachMaterials(doc, baseUrl, [...found.values()]) : [...found.values()];
   }
 
+  // OneTopic can render only the first/selected tab in #region-main.
+  // The section number varies by course and must NEVER be hardcoded.
+  function collectAssessmentSections(doc, baseUrl) {
+    const base = new URL(baseUrl);
+    const courseId = base.searchParams.get('id');
+    if (!/^[1-9]\d*$/.test(courseId || '')) return [];
+    const normal = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/\s+/g, ' ').trim().toLowerCase();
+    const relevant = name => /(?:postag(?:em|ens)|superac(?:ao|oes)|situac(?:ao|oes) de aprendizagem|avaliac(?:ao|oes)|atividades? avaliativas?|tarefas? avaliativas?|\bsaps?\b|\benvios?\b)/.test(normal(name));
+    const groups = new Map();
+    const consider = (number, title = '', hasAssignment = false) => {
+      if (!/^[1-9]\d*$/.test(String(number))) return;
+      const id = String(Number(number));
+      const item = groups.get(id) || { number: Number(id), names: [], hasAssignment: false };
+      if (title) item.names.push(title);
+      item.hasAssignment ||= hasAssignment;
+      groups.set(id, item);
+    };
+    // Support section 4, section 5, or any numbered tab; restrict to same course.
+    for (const link of doc.querySelectorAll('a[href*="section="]')) {
+      if (!link.closest('li[class*="tab_position_"], .onetopic, #courseindex, .courseindex-section')) continue;
+      try {
+        const url = new URL(link.getAttribute('href'), base);
+        if (url.origin !== base.origin || url.pathname !== '/course/view.php' ||
+            url.searchParams.get('id') !== courseId) continue;
+        consider(url.searchParams.get('section'), cleanName(link, ''));
+      } catch (_) { /* ignore malformed tab */ }
+    }
+    // Some Moodle courses advertise assignment links only in the sidebar.
+    for (const group of doc.querySelectorAll('#courseindex .courseindex-section[data-number], .courseindex-section[data-for="section"][data-number]')) {
+      const number = group.getAttribute('data-number');
+      const label = group.querySelector('.courseindex-link, [data-for="section_title"] a, .courseindex-section-title, a[href*="section="]');
+      const title = cleanName(label, '');
+      const hasAssignment = !!group.querySelector('a[href*="/mod/assign/view.php"]');
+      consider(number, title, hasAssignment);
+    }
+    return [...groups.values()].map(item => {
+      const url = new URL('/course/view.php', base);
+      url.searchParams.set('id', courseId);
+      url.searchParams.set('section', String(item.number));
+      url.hash = 'tabs-tree-start';
+      return { ...item, preferred: item.hasAssignment || item.names.some(relevant), href: url.href };
+    }).sort((a,b) => Number(b.preferred)-Number(a.preferred) || a.number-b.number);
+  }
+
   // Cursos listados numa página de categoria.
   function collectCourses(doc, baseUrl) {
     const main = doc.querySelector('[role="main"], #region-main') || doc;
@@ -228,7 +273,7 @@
   }
 
   root.IMN.pages = {
-    parsePendingCount, parsePendingInfo, SUMMARY_PARTIAL, collectAssignments, collectCourses, collectCategoryPages, extractSesskey, extractPendingUserIds,
+    parsePendingCount, parsePendingInfo, SUMMARY_PARTIAL, collectAssignments, collectAssessmentSections, collectCourses, collectCategoryPages, extractSesskey, extractPendingUserIds,
     fetchDocument, looksLikeLogin, assignmentIdFromHref, courseIdFromHref,
     MAX_ASSIGNMENTS_PER_COURSE, MAX_COURSES_PER_CATEGORY
   };

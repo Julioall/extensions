@@ -77,18 +77,67 @@
 
     async function scanCourse(course, onResult, { force = false, maxInflight = Infinity, onAssignments = () => {} } = {}) {
       const { doc, finalUrl } = await governor.run(async () => { spend(); return fetchDoc(course.href); });
-      const discovered = pages.collectAssignments(doc, finalUrl);
-      // Mesmo verificador usado na página do curso. Ao buscar pela categoria, a
-      // página inicial do curso pode exibir apenas uma seção; incluir as demais
-      // atividades encontradas no índice lateral evita omitir SAPs de outras UCs.
-      // Atividades comprovadamente futuras/fechadas continuam excluídas quando
-      // há datas visíveis; sem datas, conferimos o resumo e não supomos zero.
+      const assignmentsById = new Map();
+      const merge = (page, pageUrl) => {
+        for (const activity of pages.collectAssignments(page, pageUrl)) {
+          const old = assignmentsById.get(activity.assignmentId);
+          // Prefer the actual opened section, with dates, over sidebar links.
+          if (!old || (old.fromIndex && !activity.fromIndex)) assignmentsById.set(activity.assignmentId, activity);
+        }
+      };
+      merge(doc, finalUrl);
+
+      // For OneTopic, open assessment sections in the same authenticated Moodle
+      // session. Use their titles/assignment links; never assume section=4 or 5.
+      const tabs = pages.collectAssessmentSections?.(doc, finalUrl) || [];
+      const onetopic = !!doc.querySelector('li[class*="tab_position_"]') ||
+        !!doc.body?.classList?.contains('format-onetopic');
+      const MAX_SECTIONS = 12;
+      let sectionFailures = 0, checkedSections = 0;
+      if (onetopic && tabs.length) {
+        const preferred = tabs.filter(t => t.preferred);
+        const queue = preferred.length ? preferred : tabs;
+        const remaining = preferred.length ? tabs.filter(t => !t.preferred) : [];
+        const current = new URL(finalUrl).searchParams.get('section');
+        let attempted = 0;
+        const visitTabs = async candidates => {
+          for (const tab of candidates) {
+            if (current === String(tab.number)) continue;
+            if (attempted >= MAX_SECTIONS) {
+              sectionFailures += 1;
+              continue;
+            }
+            attempted += 1;
+            try {
+              const section = await governor.run(async () => { spend(); return fetchDoc(tab.href); });
+              if (new URL(section.finalUrl).searchParams.get('id') !== course.courseId) {
+                sectionFailures += 1;
+                continue;
+              }
+              merge(section.doc, section.finalUrl);
+              checkedSections += 1;
+            } catch (error) {
+              sectionFailures += 1;
+            }
+          }
+        };
+        await visitTabs(queue);
+        // When a relevant tab is empty, probe the other known tabs cautiously.
+        if (!assignmentsById.size && remaining.length) await visitTabs(remaining);
+      }
+      const discovered = [...assignmentsById.values()];
       const selection = root.IMN.scope.selectAssignments(discovered, doc, new Date(),
         { restrictSection: false, includeUndated: true, includeIndexUndated: true });
       const assignments = selection.active;
       onAssignments(assignments);
+      // The category caller sets maxInflight=1: only one activity per course.
       const scan = await scanAssignments(assignments, onResult, { force, maxInflight });
-      return { course, assignments, excludedAssignments: selection.excluded, ...scan };
+      if (sectionFailures) {
+        scan.summary.unverified += sectionFailures;
+        scan.summary.partial = true;
+      }
+      return { course, assignments, excludedAssignments: selection.excluded,
+        sectionFailures, checkedSections, ...scan };
     }
 
     return { pendingCount, scanAssignments, scanCourse, resetBudget, get used() { return used; } };
