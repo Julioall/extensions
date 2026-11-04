@@ -278,8 +278,10 @@
           let result;
           let detail = '';
           if (s.assignmentCount === 0) {
-            result = { state: 'empty', message: 'Nenhuma tarefa de envio identificada neste curso.' };
-            r.skipped = true;
+            result = r.sectionFailures
+              ? { state: 'error', message: `Não foi possível verificar ${r.sectionFailures} aba(s) de atividades.` }
+              : { state: 'empty', message: 'Nenhuma tarefa de envio identificada neste curso.' };
+            r.skipped = !r.sectionFailures;
           } else if (s.partial && s.total === 0) {
             // total parcial igual a 0 não pode virar "Sem pendências": o que falhou pode ter pendência
             result = { state: 'error', message: `${s.unverified} atividade(s) não verificada(s).` };
