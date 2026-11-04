@@ -123,7 +123,10 @@
     const discovered = deps.pages.collectAssignments(doc, url);
     if (!discovered.length) return null;
     // Apenas tarefas da seção atual e comprovadamente abertas no Moodle.
-    const selection = IMN.scope.selectAssignments(discovered, doc, new Date(), {sectionNumber: new URL(url).searchParams.get('section'), includeUndated: true});
+    // Tiles and single-section courses can expose tasks only in the index.
+    // Verify each grading summary before marking any item as pending.
+    const selection = IMN.scope.selectAssignments(discovered, doc, new Date(),
+      { restrictSection: false, includeUndated: true, includeIndexUndated: true });
     const assignments = selection.active;
     const bar = createBar(doc, 'Correção de atividades');
     mountBar(doc, bar);
@@ -254,7 +257,9 @@
       }
       if (pendingPages.length || courses.length >= maxCourses) paginationIncomplete = true;
       status.clear(); status.refresh();
-      const done = await Promise.all(courses.map(async course => {
+      // Demand-driven queue: inspect at most two courses simultaneously.
+      // Start another course only when one of the current two finishes.
+      const inspectCourse = async course => {
         const badge = badges.get(course.courseId) || null; // curso de outra página
         if (badge) setBadge(badge, null);
         let total = 0; let finishedHere = 0;
@@ -263,7 +268,12 @@
             finishedHere += 1; progress.actsDone += 1;
             if (total && badge) badge.textContent = `Verificando… ${finishedHere}/${total}`;
             status.refresh();
-          }, { force, onAssignments: list => { total = list.length; progress.acts += list.length; progress.courses += 1; if (badge) badge.textContent = `Verificando… 0/${total}`; status.refresh(); } });
+          }, { force, maxInflight: 1, onAssignments: list => {
+            total = list.length;
+            progress.acts += list.length;
+            if (badge) badge.textContent = `Verificando… 0/${total}`;
+            status.refresh();
+          } });
           const s = r.summary;
           let result;
           let detail = '';
@@ -283,11 +293,23 @@
           if (badge && s.partial && result.state === 'ok') { badge.textContent += ' · parcial'; badge.title = `${s.unverified} atividades não conferidas.`; }
           return r;
         } catch (error) {
-          progress.courses += 1;
           if (badge) setBadge(badge, { state: 'error', message: error.message });
           return { course, assignments: [], results: [], summary: null, error };
+        } finally {
+          progress.courses += 1;
+          status.refresh();
         }
-      }));
+      };
+      const done = new Array(courses.length);
+      let nextCourse = 0;
+      const courseWorker = async () => {
+        for (;;) {
+          const index = nextCourse++;
+          if (index >= courses.length) return;
+          done[index] = await inspectCourse(courses[index]);
+        }
+      };
+      await Promise.all(Array.from({ length: Math.min(2, courses.length) }, () => courseWorker()));
       last = done;
       const sums = done.filter(r => r.summary).map(r => r.summary);
       const agg = {
@@ -324,7 +346,15 @@
   }
 
   function createDeps(win) {
-    const governor = IMN.governor.createGovernor();
+    // Category/search page: one request initially, at most two active,
+    // 450ms between starts, with retries/backoff. Course page unchanged.
+    const path = new URL(win.location.href).pathname;
+    const isCourseList = path === '/course/index.php' || path === '/course/search.php';
+    const governor = IMN.governor.createGovernor(isCourseList ? {
+      maxConcurrent: 2, initialConcurrent: 1, minIntervalMs: 450,
+      growAfter: 10, retryDelaysMs: [1500, 4000, 10000],
+      isTabHidden: () => false,
+    } : {});
     const cache = IMN.cache.createCache({ origin: () => win.location.origin });
     const fetchDoc = (url, options = {}) => IMN.pages.fetchDocument(url, { origin: win.location.origin, ...options });
     const scanner = IMN.scanner.createScanner({ governor, cache, fetchDoc });
