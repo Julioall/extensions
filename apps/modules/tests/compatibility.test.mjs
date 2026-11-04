@@ -44,7 +44,7 @@ test('catalog is toolbar popup only, without a Modules radial action',()=>{
 });
 test('catalog lists exactly the submitted source versions',()=>{
  const c=json('catalog.json');
- assert.deepEqual(c.modules.map(m=>[m.id,m.version]),[['corrections','1.7.10'],['dates','1.3.9']]);
+ assert.deepEqual(c.modules.map(m=>[m.id,m.version]),[['corrections','1.7.11'],['dates','1.3.9']]);
 });
 test('original background workers are imported without rewriting',()=>{
  const master=text('modules-background.js');
