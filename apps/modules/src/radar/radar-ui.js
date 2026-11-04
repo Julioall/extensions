@@ -16,8 +16,8 @@
   function badgeText(result) {
     if (!result) return 'Verificando…';
     if (result.state === 'ok') return result.count === 0 ? 'Em dia' : `${result.count} pendente${result.count === 1 ? '' : 's'}`;
-    if (result.state === 'empty') return 'Não localizado';
-    if (result.state === 'na') return 'Sem avaliação';
+    if (result.state === 'empty') return 'Sem tarefas';
+    if (result.state === 'na') return 'Sem contagem';
     return 'Não verificado';
   }
   function badgeTone(result) {
@@ -278,13 +278,13 @@
           let result;
           let detail = '';
           if (s.assignmentCount === 0) {
-            result = { state: 'na', message: 'Nenhuma tarefa comprovadamente em andamento.' };
+            result = { state: 'empty', message: 'Nenhuma tarefa de envio identificada neste curso.' };
             r.skipped = true;
           } else if (s.partial && s.total === 0) {
             // total parcial igual a 0 não pode virar "Sem pendências": o que falhou pode ter pendência
             result = { state: 'error', message: `${s.unverified} atividade(s) não verificada(s).` };
           } else if (s.checked === 0 && s.noControl > 0) {
-            result = { state: 'na', message: 'Nenhuma atividade deste curso mostra "Precisa de avaliação". Abra o curso se esperava pendências.' };
+            result = { state: 'error', message: `undefined tarefa(s) identificada(s), mas sem resumo de avaliação verificável.` };
           } else {
             result = { state: 'ok', count: s.total };
             detail = s.partial ? `${s.unverified} atividade(s) não verificada(s): total parcial.` : `${s.activitiesPending} de ${s.assignmentCount} atividade(s) com pendência.`;
