@@ -29,10 +29,11 @@
     const u = new URL(location.href);
     const course = u.pathname === '/course/view.php' && /^[1-9]\d*$/.test(u.searchParams.get('id') || '');
     const category = u.pathname === '/course/index.php' && /^[1-9]\d*$/.test(u.searchParams.get('categoryid') || '');
+    const search = u.pathname === '/course/search.php';
     if (type === 'course') return course;
-    if (type === 'radar') return course || category;
+    if (type === 'radar') return course || category || search;
     if (type === 'grading') return u.pathname === '/mod/assign/view.php' && u.searchParams.get('action') === 'grading';
-    if (type === 'import') return course || category || validRoute('grading');
+    if (type === 'import') return course || category || search || validRoute('grading');
     return false;
   }
   // Uma única opção: no curso/categoria importa lote; na avaliação abre a atividade.
